@@ -1,0 +1,3 @@
+C:/Users/johnw/Code/2D-Game-Framework/Demos/build/CMakeFiles/Platform_Demo.dir
+C:/Users/johnw/Code/2D-Game-Framework/Demos/build/CMakeFiles/edit_cache.dir
+C:/Users/johnw/Code/2D-Game-Framework/Demos/build/CMakeFiles/rebuild_cache.dir

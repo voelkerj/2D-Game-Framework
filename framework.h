@@ -2,11 +2,13 @@
 #define FRAMEWORK_H
 
 #include <cinttypes>
+#include <iostream>  //DEBUG
 #include <map>
 #include <string>
 #include <vector>
 
 #include "SDL.h"
+#include "SDL_image.h"
 #include "math.h"
 
 // STRUCTS
@@ -31,8 +33,8 @@ struct Camera {
   int pos_y;
 
   // Width of the Camera's projected FOV
-  int FOV_width;
-  int FOV_height;
+  float FOV_width;
+  float FOV_height;
 };
 
 // CLASSES
@@ -88,8 +90,8 @@ class Force {
   float fx;
   float fy;
 
-  Force(){};
-  Force(float fx_in, float fy_in){};
+  Force();
+  Force(float fx_in, float fy_in);
   ~Force(){};
 
   float magnitude();
@@ -128,8 +130,14 @@ class Entity {
   Entity(){};
   ~Entity(){};
 
+  void load_sprite_sheet(std::string sprite_sheet_path, SDL_Renderer* renderer);
   void update_state(std::vector<Force> forces, Uint32 elapsed_time);
 };
+
+void Entity::load_sprite_sheet(std::string sprite_sheet_path,
+                               SDL_Renderer* renderer) {
+  sprite_sheet = IMG_LoadTexture(renderer, sprite_sheet_path.c_str());
+}
 
 void Entity::update_state(std::vector<Force> forces, Uint32 elapsed_time) {
   std::vector<Force>::iterator force_ptr;
@@ -161,8 +169,8 @@ class Graphics {
   SDL_Window* window;
   SDL_Renderer* renderer;
 
-  Graphics(){};
-  ~Graphics(){};
+  Graphics();
+  ~Graphics();
 
   void add_to_queue(Entity entity);
   void draw_queue(Camera camera, Uint32 current_ticks);
@@ -170,6 +178,18 @@ class Graphics {
 
   void clear_screen();
 };
+
+Graphics::Graphics() {
+  window = SDL_CreateWindow("Framework",
+                            SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1,
+                            1, SDL_WINDOW_FULLSCREEN_DESKTOP);
+  renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+  SDL_SetRenderDrawColor(renderer, 0x29, 0x32, 0x41, 0xFF);
+}
+
+Graphics::~Graphics() {
+  SDL_DestroyWindow(window);
+}
 
 void Graphics::add_to_queue(Entity entity) {
   queue.push_back(entity);
@@ -185,31 +205,40 @@ void Graphics::draw_queue(Camera camera, Uint32 current_ticks) {
             .pos_x<(camera.pos_x + camera.FOV_width) & entity_ptr->state.pos_y>
                 camera.pos_y &
         entity_ptr->state.pos_y > (camera.pos_y + camera.FOV_height)) {
-      // Get Screen Coordinates of Entity
 
       // Draw Entity
       SDL_Rect clipping_rect =
           entity_ptr->animations[entity_ptr->current_animation].get_frame(
               current_ticks);
 
-      int* window_width;
-      int* window_height;
-      SDL_GetWindowSize(window, window_width, window_height);
+      int window_width;
+      int window_height;
+      SDL_GetWindowSize(window, &window_width, &window_height);
 
-      float scale_x = *window_width / camera.FOV_width;
-      float scale_y = *window_height / camera.FOV_height;
+      float scale_x = window_width / camera.FOV_width;
+      // std::cout << window_width << ", " << camera.FOV_width << "\n";
+      float scale_y = window_height / camera.FOV_height;
 
       SDL_Rect destination_rect;
-      destination_rect.x = entity_ptr->state.pos_x * scale_x;
-      destination_rect.y = *window_height - (entity_ptr->state.pos_y * scale_y);
-      destination_rect.w = entity_ptr->size_x * scale_x;
-      destination_rect.h = entity_ptr->size_y * scale_y;
+      // destination_rect.x = entity_ptr->state.pos_x * scale_x;
+      // destination_rect.y = window_height - (entity_ptr->state.pos_y * scale_y);
+      // destination_rect.w = entity_ptr->size_x * scale_x;
+      // destination_rect.h = entity_ptr->size_y * scale_y;
+
+      destination_rect.x = 50;
+      destination_rect.y = 50;
+      destination_rect.w = 64;
+      destination_rect.h = 16;
+
+      // std::cout << scale_x << ", " << scale_y << "\n";
+      // std::cout << destination_rect.x << ", " << destination_rect.y << ", " << destination_rect.w << ", " << destination_rect.h << "\n";
+      // std::cout << clipping_rect.x << ", " << clipping_rect.y << ", " << clipping_rect.w << ", " << clipping_rect.h << "\n";
 
       SDL_RenderCopy(renderer, entity_ptr->sprite_sheet, &clipping_rect,
                      &destination_rect);
     }
   }
-
+  // std::cout << "drawing\n";
   SDL_RenderPresent(renderer);
 }
 
@@ -243,6 +272,53 @@ void FrameManager::end_frame() {
   if ((frame_end_ticks - frame_start_ticks) < (1000 / fps)) {
     SDL_Delay((1000 / fps) - (frame_end_ticks - frame_start_ticks));
   }
+}
+
+class InputHandler {
+ public:
+  InputHandler(){};
+  ~InputHandler(){};
+
+  void start_frame();
+
+  void handle_keyboard_event(SDL_Event event);
+
+  bool was_pressed(const SDL_Scancode& key);
+  bool was_released(const SDL_Scancode& key);
+  bool is_held(const SDL_Scancode& key);
+
+ private:
+  std::map<SDL_Scancode, bool> pressed_keys;
+  std::map<SDL_Scancode, bool> released_keys;
+  std::map<SDL_Scancode, bool> held_keys;
+};
+
+void InputHandler::start_frame() {
+  pressed_keys.clear();
+  released_keys.clear();
+}
+
+void InputHandler::handle_keyboard_event(SDL_Event event) {
+  if (event.type == SDL_KEYDOWN) {
+    pressed_keys[event.key.keysym.scancode] = true;
+    held_keys[event.key.keysym.scancode] = true;
+  }
+  if (event.type == SDL_KEYUP) {
+    held_keys[event.key.keysym.scancode] = false;
+    released_keys[event.key.keysym.scancode] = true;
+  }
+}
+
+bool InputHandler::was_pressed(const SDL_Scancode& key) {
+  return pressed_keys[key];
+}
+
+bool InputHandler::was_released(const SDL_Scancode& key) {
+  return released_keys[key];
+}
+
+bool InputHandler::is_held(const SDL_Scancode& key) {
+  return held_keys[key];
 }
 
 #endif

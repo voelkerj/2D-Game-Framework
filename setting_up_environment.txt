@@ -1,0 +1,30 @@
+Setup
+https://code.visualstudio.com/docs/cpp/config-mingw
+1) Install VSCode
+2) Install CMake
+3) Install Mingw-w64
+   a) No need to run the pacman on the MSYS2 website
+   b) Run pacman -S --needed base-devel mingw-w64-x86_64-toolchain
+4) Add CMake and mingw64 bin folders to user path
+5) Open VSCode settings.json ans paste the following:
+{
+    "explorer.confirmDelete": false,
+    "C_Cpp.default.compilerPath": "C:\\msys64\\mingw64\\bin\\gcc.exe",
+    "cmake.cmakePath": "C:\\Program Files\\CMake\\bin\\cmake.exe",
+    "cmake.mingwSearchDirs": [
+        "C:\\mingw-w64\\mingw64\\bin"
+    ],
+    "cmake.generator": "MinGW Makefiles",
+    "explorer.confirmDragAndDrop": false,
+    "debug.onTaskErrors": "abort",
+    "git.enableSmartCommit": true,
+    "workbench.colorTheme": "Kimbie Dark",
+    "C_Cpp.default.includePath": [
+        "C:\\Libraries\\SDL2-2.26.2\\x86_64-w64-mingw32\\include\\SDL2",
+        "C:\\Libraries\\SDL2_image-2.6.2\\x86_64-w64-mingw32\\include\\SDL2",
+        "C:\\Libraries\\SDL2_ttf-2.20.2\\x86_64-w64-mingw32\\include\\SDL2"
+    ]
+}
+
+CMake
+https://code.visualstudio.com/docs/cpp/CMake-linux
