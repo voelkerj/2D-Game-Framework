@@ -9,7 +9,7 @@
 
 #include "SDL.h"
 #include "SDL_image.h"
-#include "math.h"
+#include "physics.h"
 
 // STRUCTS
 struct State {
@@ -19,6 +19,7 @@ struct State {
   float vel_y;
   float acc_x;
   float acc_y;
+  float angle;
 };
 
 struct Camera {
@@ -77,37 +78,6 @@ SDL_Rect Animation::get_frame(Uint32 current_ticks) {
 
 void Animation::reset() {
   frame_idx = 0;
-}
-
-class Force {
- public:
-  float fx;
-  float fy;
-
-  Force();
-  Force(float fx_in, float fy_in);
-  ~Force(){};
-
-  float magnitude();
-  float direction();
-};
-
-Force::Force() {
-  fx = 0;
-  fy = 0;
-}
-
-Force::Force(float fx_in, float fy_in) {
-  fx = fx_in;
-  fy = fy_in;
-}
-
-float Force::magnitude() {
-  return sqrt(pow(fx, 2) + pow(fy, 2));
-}
-
-float Force::direction() {
-  return atan2(fy, fx);
 }
 
 class Entity {
