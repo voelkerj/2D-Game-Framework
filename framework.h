@@ -13,13 +13,14 @@
 
 // STRUCTS
 struct State {
-  float pos_x;
-  float pos_y;
-  float vel_x;
-  float vel_y;
-  float acc_x;
-  float acc_y;
-  float angle;
+  float pos_x{0};
+  float pos_y{0};
+  float vel_x{0};
+  float vel_y{0};
+  float acc_x{0};
+  float acc_y{0};
+  float angular_velocity{0};
+  float angle{0};
 };
 
 struct Camera {
@@ -37,7 +38,7 @@ struct Camera {
 class Animation {
  public:
   int frame_idx{0};
-  int update_interval; // milliseconds
+  int update_interval;  // milliseconds
   Uint32 prev_update_ticks{0};
   std::vector<SDL_Rect> frame_rects;
 
@@ -90,12 +91,14 @@ class Entity {
   std::string current_animation;
   bool collision;
   SDL_Texture* sprite_sheet;
+  MomentOfInertia MoI;
 
   Entity(){};
   ~Entity(){};
 
   void load_sprite_sheet(std::string sprite_sheet_path, SDL_Renderer* renderer);
-  void update_state(std::vector<Force> forces, Uint32 elapsed_time);
+  void update_state(std::vector<Force> forces, std::vector<Moment> moments,
+                    Uint32 elapsed_time);
 };
 
 void Entity::load_sprite_sheet(std::string sprite_sheet_path,
@@ -108,28 +111,46 @@ void Entity::load_sprite_sheet(std::string sprite_sheet_path,
   }
 }
 
-void Entity::update_state(std::vector<Force> forces, Uint32 elapsed_time) {
-  std::vector<Force>::iterator force_ptr;
+void Entity::update_state(std::vector<Force> forces,
+                          std::vector<Moment> moments, Uint32 elapsed_time) {
 
-  Force resultant;
+  elapsed_time = elapsed_time / 1000;  // Convert ms to s
 
+  Force resultant_force;
+  Moment resultant_moment;
+
+  // TRANSLATION
   // Force
-  for (force_ptr = forces.begin(); force_ptr < forces.end(); force_ptr++) {
-    resultant.fx += force_ptr->fx;
-    resultant.fy += force_ptr->fy;
+  if (forces.size() > 0) {
+    for (Force& force : forces) {
+      resultant_force.fx += force.fx;
+      resultant_force.fy += force.fy;
+    }
   }
 
   // Acceleration
-  state.acc_x = resultant.fx / mass;
-  state.acc_y = resultant.fy / mass;
+  state.acc_x = state.acc_x + resultant_force.fx / mass;
+  state.acc_y = state.acc_y + resultant_force.fy / mass;
 
   // Velocity
-  state.vel_x = state.acc_x * elapsed_time;
-  state.vel_y = state.acc_y * elapsed_time;
+  state.vel_x = state.vel_x + state.acc_x * elapsed_time;
+  state.vel_y = state.vel_y + state.acc_y * elapsed_time;
 
   // Position
-  state.pos_x = state.vel_x * elapsed_time;
-  state.pos_y = state.vel_y * elapsed_time;
+  state.pos_x = state.pos_x + state.vel_x * elapsed_time;
+  state.pos_y = state.pos_y + state.vel_y * elapsed_time;
+
+  // ROTATION
+  // Moment
+  for (Moment& moment : moments) {
+    resultant_moment.value += moment.value;
+  }
+
+  // Angular Velocity
+  state.angular_velocity = state.angular_velocity + resultant_moment.value / MoI.value;
+
+  // Angle
+  state.angle = state.angle + state.angular_velocity * elapsed_time;
 }
 
 class Graphics {
@@ -162,8 +183,7 @@ Graphics::~Graphics() {
   SDL_DestroyWindow(window);
 }
 
-void Graphics::add_to_queue(Entity& entity)
-{
+void Graphics::add_to_queue(Entity& entity) {
   queue.push_back(&entity);
 }
 
@@ -179,8 +199,7 @@ bool Graphics::point_within_camera_view(float x, float y, Camera camera) {
 void Graphics::draw_queue(Camera camera, Uint32 current_ticks) {
   for (auto& entity : queue) {
     // If entity is within the camera bounds
-    if (point_within_camera_view(entity->state.pos_x,
-                                 entity->state.pos_y,
+    if (point_within_camera_view(entity->state.pos_x, entity->state.pos_y,
                                  camera) ||  // Check Bottom-Left
         point_within_camera_view(entity->state.pos_x,
                                  entity->state.pos_y + entity->size_y,
@@ -192,10 +211,10 @@ void Graphics::draw_queue(Camera camera, Uint32 current_ticks) {
                                  entity->state.pos_y + entity->size_y,
                                  camera))  // Check Top-Right
     {
- 
+
       // Draw Entity
       Animation& animation = entity->animations[entity->current_animation];
-      
+
       SDL_Rect clipping_rect = animation.get_frame(current_ticks);
 
       int window_width;
@@ -207,10 +226,9 @@ void Graphics::draw_queue(Camera camera, Uint32 current_ticks) {
 
       SDL_Rect destination_rect;
       destination_rect.x = (entity->state.pos_x - camera.pos_x) * scale_x;
-      destination_rect.y =
-          window_height -
-          (entity->state.pos_y - camera.pos_y) *
-              scale_y - (entity->size_y * scale_y);
+      destination_rect.y = window_height -
+                           (entity->state.pos_y - camera.pos_y) * scale_y -
+                           (entity->size_y * scale_y);
       destination_rect.w = entity->size_x * scale_x;
       destination_rect.h = entity->size_y * scale_y;
 
