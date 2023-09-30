@@ -55,7 +55,7 @@ int main(int argc, char** argv) {
   block3.state.pos_x = 15;
   block3.state.pos_y = 7;
   block3.size_x = 11;
-  block3.size_y = 1;
+  block3.size_y = 0.5;
 
   Entity block4;
   block4.load_sprite_sheet(base_path + "..\\resources\\block.png",
@@ -73,9 +73,13 @@ int main(int argc, char** argv) {
                          graphics.renderer);
                          
   ball.state.pos_x = 0;
-  ball.state.pos_y = 0;
+  ball.state.pos_y = 6;
   ball.size_x = 2;
   ball.size_y = 2;
+
+  ball.mass = 5;
+
+  ball.MoI.calculate_disk(ball.mass, ball.size_x / 2.0);
 
   Animation ball_roll;
   ball_roll.add_frame(0, 0, 16, 16);
@@ -93,14 +97,32 @@ int main(int argc, char** argv) {
 
   ball.animations["roll"] = ball_roll;
   ball.animations["idle"] = ball_idle;
-  ball.current_animation = "roll";
+  ball.current_animation = "idle";
+
+  // RVector r(0,2);
+  // Force spin_force(0.2,0);
+  // Moment spin_moment(spin_force, r);
+  
+  std::vector<Force> ball_forces;
+  // ball_forces.push_back(spin_force);
+
+  std::vector<Moment> ball_moments;
+  // ball_moments.push_back(spin_moment);
+
+  // ball.update_state(ball_forces, ball_moments, SDL_GetTicks());
+  // std::vector<Force> empty_f;
+  // std::vector<Moment> empty_m;
 
   // Frame Loop
+  Uint32 previous_ticks{0};
   while (true) {
     frameManager.start_frame();
     inputs.start_frame();
     graphics.clear_screen();
     graphics.clear_queue();
+    
+    ball_forces.clear();
+    ball_moments.clear();
 
     // Handle Keyboard and Close Button
     if (SDL_PollEvent(&event)) {
@@ -117,14 +139,32 @@ int main(int argc, char** argv) {
         return 0;
 
       // WASD Moves Camera
-      if (inputs.is_held(SDL_SCANCODE_W))
-        camera.pos_y += .1;
-      if (inputs.is_held(SDL_SCANCODE_A))
-        camera.pos_x -= .1;
-      if (inputs.is_held(SDL_SCANCODE_S))
-        camera.pos_y -= .1;
-      if (inputs.is_held(SDL_SCANCODE_D))
-        camera.pos_x += .1;
+      if (inputs.is_held(SDL_SCANCODE_W)){
+        // camera.pos_y += .1;
+        Force up_force(0,.1);
+        RVector r(-1,0);
+        Moment spin_fwd(up_force, r);
+        ball_moments.push_back(spin_fwd);
+        // ball_forces.push_back(up_force);
+      }
+      if (inputs.is_held(SDL_SCANCODE_A)){
+        // camera.pos_x -= .1;
+        Force left_force(-.1,0);
+        // ball_forces.push_back(left_force);
+      }
+      if (inputs.is_held(SDL_SCANCODE_S)){
+        // camera.pos_y -= .1;
+        Force down_force(0,-.1);
+        RVector r(-1,0);
+        Moment spin_bwd(down_force, r);
+        ball_moments.push_back(spin_bwd);
+        // ball_forces.push_back(down_force);
+      }
+      if (inputs.is_held(SDL_SCANCODE_D)){
+        // camera.pos_x += .1;
+        Force right_force(.1,0);
+        // ball_forces.push_back(right_force);
+      }
 
       // Spacebar toggles ball roll
       if (inputs.was_pressed(SDL_SCANCODE_SPACE)) {
@@ -142,7 +182,12 @@ int main(int argc, char** argv) {
     
     graphics.add_to_queue(ball);
 
+    ball.update_state(ball_forces, ball_moments, SDL_GetTicks() - previous_ticks);
+
     graphics.draw_queue(camera, SDL_GetTicks());
+
+    previous_ticks = SDL_GetTicks();
+    
     frameManager.end_frame();
   }
 

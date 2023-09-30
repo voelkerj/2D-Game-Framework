@@ -1,4 +1,4 @@
-cd Demos
+cd ..\Demos
 if exist build\ (
 rmdir /s /q build
 )

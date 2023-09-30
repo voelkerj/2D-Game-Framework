@@ -19,8 +19,8 @@ struct State {
   float vel_y{0};
   float acc_x{0};
   float acc_y{0};
-  float angular_velocity{0};
-  float angle{0};
+  float angular_velocity{0};  // Degrees per second
+  float angle{0};             // Degrees
 };
 
 struct Camera {
@@ -83,9 +83,9 @@ void Animation::reset() {
 
 class Entity {
  public:
-  int size_x;
-  int size_y;
-  float mass;
+  float size_x;
+  float size_y;
+  float mass{0};
   State state;
   std::map<std::string, Animation> animations;
   std::string current_animation;
@@ -114,7 +114,7 @@ void Entity::load_sprite_sheet(std::string sprite_sheet_path,
 void Entity::update_state(std::vector<Force> forces,
                           std::vector<Moment> moments, Uint32 elapsed_time) {
 
-  elapsed_time = elapsed_time / 1000;  // Convert ms to s
+  float elapsed_time_float = elapsed_time / 1000.0;  // Convert ms to s
 
   Force resultant_force;
   Moment resultant_moment;
@@ -126,31 +126,34 @@ void Entity::update_state(std::vector<Force> forces,
       resultant_force.fx += force.fx;
       resultant_force.fy += force.fy;
     }
+
+    // Acceleration
+    state.acc_x += resultant_force.fx / mass;
+    state.acc_y += resultant_force.fy / mass;
   }
 
-  // Acceleration
-  state.acc_x += resultant_force.fx / mass;
-  state.acc_y += resultant_force.fy / mass;
-
   // Velocity
-  state.vel_x += state.acc_x * elapsed_time;
-  state.vel_y += state.acc_y * elapsed_time;
+  state.vel_x += state.acc_x * elapsed_time_float;
+  state.vel_y += state.acc_y * elapsed_time_float;
 
   // Position
-  state.pos_x += state.vel_x * elapsed_time;
-  state.pos_y += state.vel_y * elapsed_time;
+  state.pos_x += state.vel_x * elapsed_time_float;
+  state.pos_y += state.vel_y * elapsed_time_float;
 
   // ROTATION
   // Moment
-  for (Moment& moment : moments) {
-    resultant_moment.value += moment.value;
+  if (moments.size() > 0) {
+    for (Moment& moment : moments) {
+      resultant_moment.value += moment.value;
+    }
+
+    // Angular Velocity
+    state.angular_velocity +=
+        (resultant_moment.value / MoI.value) * (180 / M_PI);
   }
 
-  // Angular Velocity
-  state.angular_velocity += resultant_moment.value / MoI.value;
-
   // Angle
-  state.angle += state.angular_velocity * elapsed_time;
+  state.angle += state.angular_velocity * elapsed_time_float;
 }
 
 class Graphics {
@@ -232,8 +235,9 @@ void Graphics::draw_queue(Camera camera, Uint32 current_ticks) {
       destination_rect.w = entity->size_x * scale_x;
       destination_rect.h = entity->size_y * scale_y;
 
-      SDL_RenderCopy(renderer, entity->sprite_sheet, &clipping_rect,
-                     &destination_rect);
+      SDL_RenderCopyEx(renderer, entity->sprite_sheet, &clipping_rect,
+                       &destination_rect, entity->state.angle, NULL,
+                       SDL_FLIP_NONE);
     }
   }
   SDL_RenderPresent(renderer);
