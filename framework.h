@@ -129,16 +129,16 @@ void Entity::update_state(std::vector<Force> forces,
   }
 
   // Acceleration
-  state.acc_x = state.acc_x + resultant_force.fx / mass;
-  state.acc_y = state.acc_y + resultant_force.fy / mass;
+  state.acc_x += resultant_force.fx / mass;
+  state.acc_y += resultant_force.fy / mass;
 
   // Velocity
-  state.vel_x = state.vel_x + state.acc_x * elapsed_time;
-  state.vel_y = state.vel_y + state.acc_y * elapsed_time;
+  state.vel_x += state.acc_x * elapsed_time;
+  state.vel_y += state.acc_y * elapsed_time;
 
   // Position
-  state.pos_x = state.pos_x + state.vel_x * elapsed_time;
-  state.pos_y = state.pos_y + state.vel_y * elapsed_time;
+  state.pos_x += state.vel_x * elapsed_time;
+  state.pos_y += state.vel_y * elapsed_time;
 
   // ROTATION
   // Moment
@@ -147,10 +147,10 @@ void Entity::update_state(std::vector<Force> forces,
   }
 
   // Angular Velocity
-  state.angular_velocity = state.angular_velocity + resultant_moment.value / MoI.value;
+  state.angular_velocity += resultant_moment.value / MoI.value;
 
   // Angle
-  state.angle = state.angle + state.angular_velocity * elapsed_time;
+  state.angle += state.angular_velocity * elapsed_time;
 }
 
 class Graphics {
