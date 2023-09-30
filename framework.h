@@ -13,24 +13,19 @@
 
 // STRUCTS
 struct State {
-  int pos_x;
-  int pos_y;
+  float pos_x;
+  float pos_y;
   float vel_x;
   float vel_y;
   float acc_x;
   float acc_y;
 };
 
-struct World {
-  int size_x;
-  int size_y;
-};
-
 struct Camera {
   // Position of Camera's center point
   //   -centerpoint is also the center of the window
-  int pos_x;
-  int pos_y;
+  float pos_x;
+  float pos_y;
 
   // Width of the Camera's projected FOV
   float FOV_width;
@@ -40,9 +35,9 @@ struct Camera {
 // CLASSES
 class Animation {
  public:
-  int frame_idx;
-  int update_interval;
-  Uint32 prev_update_ticks;
+  int frame_idx{0};
+  int update_interval; // milliseconds
+  Uint32 prev_update_ticks{0};
   std::vector<SDL_Rect> frame_rects;
 
   Animation(){};
@@ -64,21 +59,20 @@ void Animation::add_frame(int x, int y, int width, int height) {
 }
 
 SDL_Rect Animation::get_frame(Uint32 current_ticks) {
-  Uint32 elapsed_ticks = current_ticks - prev_update_ticks;
+
+  Uint32 elapsed_ticks = current_ticks - this->prev_update_ticks;
 
   // if we are past the update interval, get next frame
   if (elapsed_ticks >= update_interval) {
+    this->prev_update_ticks = current_ticks;
     frame_idx++;
-    prev_update_ticks = current_ticks;
   }
 
   // if we have advanced past the last frame, get first frame
   if (frame_idx > frame_rects.size() - 1)
     reset();
 
-  SDL_Rect current_rect = frame_rects[frame_idx];
-
-  return current_rect;
+  return frame_rects[frame_idx];
 }
 
 void Animation::reset() {
@@ -137,6 +131,11 @@ class Entity {
 void Entity::load_sprite_sheet(std::string sprite_sheet_path,
                                SDL_Renderer* renderer) {
   sprite_sheet = IMG_LoadTexture(renderer, sprite_sheet_path.c_str());
+
+  if (!sprite_sheet) {
+    std::cout << "Failed to load file " << sprite_sheet_path << "\n";
+    exit(1);
+  }
 }
 
 void Entity::update_state(std::vector<Force> forces, Uint32 elapsed_time) {
@@ -165,80 +164,90 @@ void Entity::update_state(std::vector<Force> forces, Uint32 elapsed_time) {
 
 class Graphics {
  public:
-  std::vector<Entity> queue;
+  std::vector<Entity*> queue;
   SDL_Window* window;
   SDL_Renderer* renderer;
 
   Graphics();
   ~Graphics();
 
-  void add_to_queue(Entity entity);
+  void add_to_queue(Entity& entity);
   void draw_queue(Camera camera, Uint32 current_ticks);
   void clear_queue();
 
   void clear_screen();
+
+  bool point_within_camera_view(float x, float y, Camera camera);
 };
 
 Graphics::Graphics() {
-  window = SDL_CreateWindow("Framework",
-                            SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1,
-                            1, SDL_WINDOW_FULLSCREEN_DESKTOP);
+  window = SDL_CreateWindow("Framework", SDL_WINDOWPOS_UNDEFINED,
+                            SDL_WINDOWPOS_UNDEFINED, 1, 1,
+                            SDL_WINDOW_FULLSCREEN_DESKTOP);
   renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-  SDL_SetRenderDrawColor(renderer, 0x29, 0x32, 0x41, 0xFF);
+  SDL_SetRenderDrawColor(renderer, 0xbf, 0x1d, 0x36, 0xFF);
 }
 
 Graphics::~Graphics() {
   SDL_DestroyWindow(window);
 }
 
-void Graphics::add_to_queue(Entity entity) {
-  queue.push_back(entity);
+void Graphics::add_to_queue(Entity& entity)
+{
+  queue.push_back(&entity);
+}
+
+bool Graphics::point_within_camera_view(float x, float y, Camera camera) {
+
+  if (x >= camera.pos_x & x <= camera.pos_x + camera.FOV_width &
+      y >= camera.pos_y & y <= camera.pos_y + camera.FOV_height)
+    return true;
+
+  return false;
 }
 
 void Graphics::draw_queue(Camera camera, Uint32 current_ticks) {
-  std::vector<Entity>::iterator entity_ptr;
-
-  for (entity_ptr = queue.begin(); entity_ptr < queue.end(); entity_ptr++) {
+  for (auto& entity : queue) {
     // If entity is within the camera bounds
-    if (entity_ptr->state.pos_x > camera.pos_x &
-        entity_ptr->state
-            .pos_x<(camera.pos_x + camera.FOV_width) & entity_ptr->state.pos_y>
-                camera.pos_y &
-        entity_ptr->state.pos_y > (camera.pos_y + camera.FOV_height)) {
-
+    if (point_within_camera_view(entity->state.pos_x,
+                                 entity->state.pos_y,
+                                 camera) ||  // Check Bottom-Left
+        point_within_camera_view(entity->state.pos_x,
+                                 entity->state.pos_y + entity->size_y,
+                                 camera) ||  // Check Top-Left
+        point_within_camera_view(entity->state.pos_x + entity->size_x,
+                                 entity->state.pos_y,
+                                 camera) ||  // Check Bottom-Right
+        point_within_camera_view(entity->state.pos_x + entity->size_x,
+                                 entity->state.pos_y + entity->size_y,
+                                 camera))  // Check Top-Right
+    {
+ 
       // Draw Entity
-      SDL_Rect clipping_rect =
-          entity_ptr->animations[entity_ptr->current_animation].get_frame(
-              current_ticks);
+      Animation& animation = entity->animations[entity->current_animation];
+      
+      SDL_Rect clipping_rect = animation.get_frame(current_ticks);
 
       int window_width;
       int window_height;
       SDL_GetWindowSize(window, &window_width, &window_height);
 
       float scale_x = window_width / camera.FOV_width;
-      // std::cout << window_width << ", " << camera.FOV_width << "\n";
       float scale_y = window_height / camera.FOV_height;
 
       SDL_Rect destination_rect;
-      // destination_rect.x = entity_ptr->state.pos_x * scale_x;
-      // destination_rect.y = window_height - (entity_ptr->state.pos_y * scale_y);
-      // destination_rect.w = entity_ptr->size_x * scale_x;
-      // destination_rect.h = entity_ptr->size_y * scale_y;
+      destination_rect.x = (entity->state.pos_x - camera.pos_x) * scale_x;
+      destination_rect.y =
+          window_height -
+          (entity->state.pos_y - camera.pos_y) *
+              scale_y - (entity->size_y * scale_y);
+      destination_rect.w = entity->size_x * scale_x;
+      destination_rect.h = entity->size_y * scale_y;
 
-      destination_rect.x = 50;
-      destination_rect.y = 50;
-      destination_rect.w = 64;
-      destination_rect.h = 16;
-
-      // std::cout << scale_x << ", " << scale_y << "\n";
-      // std::cout << destination_rect.x << ", " << destination_rect.y << ", " << destination_rect.w << ", " << destination_rect.h << "\n";
-      // std::cout << clipping_rect.x << ", " << clipping_rect.y << ", " << clipping_rect.w << ", " << clipping_rect.h << "\n";
-
-      SDL_RenderCopy(renderer, entity_ptr->sprite_sheet, &clipping_rect,
+      SDL_RenderCopy(renderer, entity->sprite_sheet, &clipping_rect,
                      &destination_rect);
     }
   }
-  // std::cout << "drawing\n";
   SDL_RenderPresent(renderer);
 }
 

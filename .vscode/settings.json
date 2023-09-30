@@ -47,5 +47,6 @@
         "iostream": "cpp",
         "istream": "cpp"
     },
-    "cmake.configureOnOpen": false
+    "cmake.configureOnOpen": false,
+    "cmake.sourceDirectory": "C:/Users/johnw/Code/2D-Game-Framework/Demos"
 }
