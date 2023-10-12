@@ -71,15 +71,15 @@ class MomentOfInertia {
  public:
   float value{0};
 
-  void calculate_disk(float mass, float radius);
-  void calculate_rect(float mass, float h, float w);
+  void calculate_circle(float mass, float radius);
+  void calculate_box(float mass, float h, float w);
 };
 
-void MomentOfInertia::calculate_disk(float mass, float radius) {
+void MomentOfInertia::calculate_circle(float mass, float radius) {
   value = (1.0 / 4.0) * mass * pow(radius, 2);
 }
 
-void MomentOfInertia::calculate_rect(float mass, float h, float w) {
+void MomentOfInertia::calculate_box(float mass, float h, float w) {
   value = (1.0 / 12.0) * mass * (pow(h, 2) + pow(w, 2));
 }
 

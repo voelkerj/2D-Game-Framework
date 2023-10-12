@@ -6,6 +6,7 @@ int main(int argc, char** argv) {
   std::string base_path = SDL_GetBasePath();
 
   Graphics graphics;
+  graphics.debug = true;
 
   Camera camera;
   camera.pos_x = 0;
@@ -20,22 +21,28 @@ int main(int argc, char** argv) {
 
   SDL_Event event;
 
+  CollisionProcessor collisions;
+
   // Entities
   Animation block_idle;
   block_idle.add_frame(0, 0, 64, 16);
 
   Entity block1;
+  block1.shape = box;
   block1.load_sprite_sheet(base_path + "..\\resources\\block.png",
                            graphics.renderer);
   block1.animations["idle"] = block_idle;
   block1.current_animation = "idle";
 
-  block1.state.pos_x = 10;
-  block1.state.pos_y = 5;
+  block1.state.pos_x = 20;
+  block1.state.pos_y = 10;
   block1.size_x = 8;
   block1.size_y = 2;
 
+  block1.calculate_vertices();
+
   Entity block2;
+  block2.shape = box;
   block2.load_sprite_sheet(base_path + "..\\resources\\block.png",
                            graphics.renderer);
   block2.animations["idle"] = block_idle;
@@ -43,21 +50,28 @@ int main(int argc, char** argv) {
 
   block2.state.pos_x = 0;
   block2.state.pos_y = 0;
-  block2.size_x = 5;
-  block2.size_y = 5;
+  block2.size_x = 2;
+  block2.size_y = 2;
+
+  block2.calculate_vertices();
 
   Entity block3;
+  block3.shape = box;
   block3.load_sprite_sheet(base_path + "..\\resources\\block.png",
                            graphics.renderer);
   block3.animations["idle"] = block_idle;
   block3.current_animation = "idle";
 
-  block3.state.pos_x = 15;
-  block3.state.pos_y = 7;
-  block3.size_x = 11;
-  block3.size_y = 0.5;
+  block3.state.pos_x = 10;
+  block3.state.pos_y = 6;
+  block3.size_x = 10;
+  block3.size_y = 2;
+  block3.state.angle = 0;
+
+  block3.calculate_vertices();
 
   Entity block4;
+  block4.shape = box;
   block4.load_sprite_sheet(base_path + "..\\resources\\block.png",
                            graphics.renderer);
   block4.animations["idle"] = block_idle;
@@ -68,7 +82,10 @@ int main(int argc, char** argv) {
   block4.size_x = 4;
   block4.size_y = 2;
 
+  block4.calculate_vertices();
+
   Entity ball;
+  ball.shape = circle;
   ball.load_sprite_sheet(base_path + "..\\resources\\ball.png",
                          graphics.renderer);
                          
@@ -78,8 +95,7 @@ int main(int argc, char** argv) {
   ball.size_y = 2;
 
   ball.mass = 5;
-
-  ball.MoI.calculate_disk(ball.mass, ball.size_x / 2.0);
+  ball.calculate_vertices();
 
   Animation ball_roll;
   ball_roll.add_frame(0, 0, 16, 16);
@@ -98,20 +114,23 @@ int main(int argc, char** argv) {
   ball.animations["roll"] = ball_roll;
   ball.animations["idle"] = ball_idle;
   ball.current_animation = "idle";
-
-  // RVector r(0,2);
-  // Force spin_force(0.2,0);
-  // Moment spin_moment(spin_force, r);
   
   std::vector<Force> ball_forces;
-  // ball_forces.push_back(spin_force);
 
   std::vector<Moment> ball_moments;
-  // ball_moments.push_back(spin_moment);
 
-  // ball.update_state(ball_forces, ball_moments, SDL_GetTicks());
-  // std::vector<Force> empty_f;
-  // std::vector<Moment> empty_m;
+  ball.name = "ball";
+  block1.name = "block1";
+  block2.name = "block2";
+  block3.name = "block3";
+  block4.name = "block4";
+
+  std::vector<Entity*> entities;
+  entities.push_back(&ball);
+  // entities.push_back(&block1);
+  entities.push_back(&block2);
+  entities.push_back(&block3);
+  // entities.push_back(&block4);
 
   // Frame Loop
   Uint32 previous_ticks{0};
@@ -123,6 +142,8 @@ int main(int argc, char** argv) {
     
     ball_forces.clear();
     ball_moments.clear();
+
+    collisions.reset_collisions(entities);
 
     // Handle Keyboard and Close Button
     if (SDL_PollEvent(&event)) {
@@ -140,56 +161,69 @@ int main(int argc, char** argv) {
 
       // WASD Moves Camera
       if (inputs.is_held(SDL_SCANCODE_W)){
-        // camera.pos_y += .1;
-        Force up_force(0,.1);
-        RVector r(-1,0);
-        Moment spin_fwd(up_force, r);
-        ball_moments.push_back(spin_fwd);
-        // ball_forces.push_back(up_force);
+        ball.state.pos_y += 0.1;
+        // block2.state.pos_y += 0.1;
       }
       if (inputs.is_held(SDL_SCANCODE_A)){
-        // camera.pos_x -= .1;
-        Force left_force(-.1,0);
-        // ball_forces.push_back(left_force);
+        ball.state.pos_x -= 0.1;
+        // block2.state.pos_x -= 0.1;
       }
       if (inputs.is_held(SDL_SCANCODE_S)){
-        // camera.pos_y -= .1;
-        Force down_force(0,-.1);
-        RVector r(-1,0);
-        Moment spin_bwd(down_force, r);
-        ball_moments.push_back(spin_bwd);
-        // ball_forces.push_back(down_force);
+        ball.state.pos_y -= 0.1;
+        // block2.state.pos_y -= 0.1;
       }
       if (inputs.is_held(SDL_SCANCODE_D)){
-        // camera.pos_x += .1;
-        Force right_force(.1,0);
-        // ball_forces.push_back(right_force);
+        ball.state.pos_x += 0.1;
+        // block2.state.pos_x += 0.1;
       }
 
-      // Spacebar toggles ball roll
+      if (inputs.is_held(SDL_SCANCODE_UP)){
+        camera.pos_y += 0.2;
+      }
+      if (inputs.is_held(SDL_SCANCODE_DOWN)){
+        camera.pos_y -= 0.2;
+      }
+      if (inputs.is_held(SDL_SCANCODE_LEFT)){
+        camera.pos_x -= 0.2;
+      }
+      if (inputs.is_held(SDL_SCANCODE_RIGHT)){
+        camera.pos_x += 0.2;
+      }
+
+      if (inputs.is_held(SDL_SCANCODE_PAGEUP))
+        block3.state.angle += 3;
+      if (inputs.is_held(SDL_SCANCODE_PAGEDOWN))
+        block3.state.angle -= 3;
+
       if (inputs.was_pressed(SDL_SCANCODE_SPACE)) {
-        if (ball.current_animation == "idle")
-          ball.current_animation = "roll";
+        // if (ball.current_animation == "idle")
+        //   ball.current_animation = "roll";
+        // else
+        //   ball.current_animation = "idle";
+        if (collisions.debug)
+          collisions.debug = false;
         else
-          ball.current_animation = "idle";
+          collisions.debug = true;
       }
     }
 
-    graphics.add_to_queue(block1);
+    // ball.state.pos_x += 0.1;
+
+    // graphics.add_to_queue(block1);
     graphics.add_to_queue(block2);
     graphics.add_to_queue(block3);
-    graphics.add_to_queue(block4);
+    // graphics.add_to_queue(block4);
     
     graphics.add_to_queue(ball);
 
     ball.update_state(ball_forces, ball_moments, SDL_GetTicks() - previous_ticks);
 
+    collisions.evaluate_collisions(entities);
+
     graphics.draw_queue(camera, SDL_GetTicks());
 
     previous_ticks = SDL_GetTicks();
-    
     frameManager.end_frame();
   }
-
   return 0;
 }
