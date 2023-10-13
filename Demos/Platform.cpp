@@ -6,7 +6,6 @@ int main(int argc, char** argv) {
   std::string base_path = SDL_GetBasePath();
 
   Graphics graphics;
-  graphics.debug = true;
 
   Camera camera;
   camera.pos_x = 0;
@@ -195,15 +194,23 @@ int main(int argc, char** argv) {
       if (inputs.is_held(SDL_SCANCODE_PAGEDOWN))
         block3.state.angle -= 3;
 
-      if (inputs.was_pressed(SDL_SCANCODE_SPACE)) {
-        // if (ball.current_animation == "idle")
-        //   ball.current_animation = "roll";
-        // else
-        //   ball.current_animation = "idle";
+      if (inputs.was_pressed(SDL_SCANCODE_F1)) {
         if (collisions.debug)
           collisions.debug = false;
         else
           collisions.debug = true;
+
+        if (graphics.debug)
+          graphics.debug = false;
+        else
+          graphics.debug = true;
+      }
+
+      if (inputs.was_pressed(SDL_SCANCODE_SPACE)) {
+        if (ball.current_animation == "idle")
+          ball.current_animation = "roll";
+        else
+          ball.current_animation = "idle";
       }
     }
 

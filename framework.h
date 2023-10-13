@@ -598,8 +598,8 @@ bool CollisionProcessor::AABB_overlap(Entity* A, Entity* B) {
   if (d2x > 0.0f || d2y > 0.0f)
     return false;
 
-  if (debug)
-    std::cout << A->name << " and " << B->name << " potentially colliding!\n";
+  // if (debug)
+  //   std::cout << A->name << " and " << B->name << " potentially colliding!\n";
 
   return true;
 }
