@@ -11,7 +11,6 @@
 #include "SDL_image.h"
 #include "physics.h"
 
-// STRUCTS
 struct State {
   float pos_x{0};
   float pos_y{0};
@@ -39,9 +38,18 @@ class Point {
   float x;
   float y;
 
+  Point(){};
+  ~Point(){};
+  Point(float x_in, float y_in);
+
   Point operator+(Point other);
   Point operator-(Point other);
 };
+
+Point::Point(float x_in, float y_in) {
+  x = x_in;
+  y = y_in;
+}
 
 Point Point::operator+(Point other) {
   Point p;
@@ -59,7 +67,6 @@ Point Point::operator-(Point other) {
 
 enum Shape { circle, box };
 
-// CLASSES
 class Vector2 {
  public:
   float value[2];
@@ -77,6 +84,7 @@ class Vector2 {
   Vector2 operator=(Point p);
 
   float norm();
+  void convert_to_unit();
   float dot(Vector2 other);
   float cross(Vector2 other);
 
@@ -131,6 +139,12 @@ float Vector2::norm() {
   return sqrt(pow(value[0], 2) + pow(value[1], 2));
 }
 
+void Vector2::convert_to_unit() {
+  float magnitude = norm();
+  value[0] = value[0] / magnitude;
+  value[1] = value[1] / magnitude;
+}
+
 float Vector2::dot(Vector2 other) {
   return value[0] * other[0] + value[1] * other[1];
 }
@@ -142,6 +156,12 @@ float Vector2::cross(Vector2 other) {
 void Vector2::print() {
   std::cout << value[0] << ", " << value[1] << "\n";
 }
+
+struct Edge {
+  float distance;  // Shortest distance from edge to origin
+  float index;     // Index of edge in simplex
+  Vector2 normal;  // Vector normal to edge
+};
 
 class Animation {
  public:
@@ -203,6 +223,8 @@ class Entity {
   std::vector<Point> vertices;
   std::vector<Point> vertices_WCS;
   bool collision{false};
+  // Vector2 collision_vector;
+  // float collision_depth;
   std::string name;
 
   Entity(){};
@@ -331,8 +353,12 @@ void Entity::calculate_vertices_in_WCS() {
   } else if (shape == box) {
     Point new_vertex;
     for (Point vertex : vertices) {
-      new_vertex.x = (vertex.x * cos(state.angle * (M_PI / 180)) - vertex.y * sin(state.angle * (M_PI / 180))) + state.pos_x;
-      new_vertex.y = (vertex.x * sin(state.angle * (M_PI / 180)) + vertex.y * cos(state.angle * (M_PI / 180))) + state.pos_y;
+      new_vertex.x = (vertex.x * cos(state.angle * (M_PI / 180)) -
+                      vertex.y * sin(state.angle * (M_PI / 180))) +
+                     state.pos_x;
+      new_vertex.y = (vertex.x * sin(state.angle * (M_PI / 180)) +
+                      vertex.y * cos(state.angle * (M_PI / 180))) +
+                     state.pos_y;
       vertices_WCS.emplace_back(new_vertex);
     }
   }
@@ -387,6 +413,8 @@ class Graphics {
   void add_to_queue(Entity& entity);
   void draw_queue(Camera camera, Uint32 current_ticks);
   void clear_queue();
+
+  void draw_line(Point& a, Point& b, Camera& camera);
 
   void clear_screen();
 
@@ -457,31 +485,38 @@ void Graphics::draw_queue(Camera camera, Uint32 current_ticks) {
       destination_rect.w = entity->size_x * scale_x;
       destination_rect.h = entity->size_y * scale_y;
 
-      if (entity->collision) {
-        SDL_SetTextureColorMod(entity->sprite_sheet, 255, 0, 0);
-      } else {
-        SDL_SetTextureColorMod(entity->sprite_sheet, 255, 255, 255);
-      }
-
       SDL_RenderCopyEx(renderer, entity->sprite_sheet, &clipping_rect,
                        &destination_rect, -entity->state.angle, NULL,
                        SDL_FLIP_NONE);
 
       // Draw Vertices
       if (debug) {
-        entity->calculate_vertices_in_WCS();
+        // Color entities red when they collide
+        if (entity->collision) {
+          SDL_SetTextureColorMod(entity->sprite_sheet, 255, 0, 0);
+        } else {
+          SDL_SetTextureColorMod(entity->sprite_sheet, 255, 255, 255);
+        }
+
+        // Display entity vertices
         for (Point point : entity->vertices_WCS) {
           SDL_SetRenderDrawColor(renderer, 0x48, 0xff, 0x82, 0xFF);
 
           float pt_x = (point.x - camera.pos_x) * scale_x;
-          float pt_y = window_height - (point.y - entity->size_y - camera.pos_y) * scale_y - (entity->size_y * scale_y);
+          float pt_y = window_height -
+                       (point.y - entity->size_y - camera.pos_y) * scale_y -
+                       (entity->size_y * scale_y);
 
           SDL_RenderDrawPoint(renderer, pt_x, pt_y);
         }
+
+        // Display origin
         SDL_SetRenderDrawColor(renderer, 0xbf, 0x1b, 0x38, 0xFF);
 
         float pt_x = (0 - camera.pos_x) * scale_x;
-        float pt_y = window_height - (0 - entity->size_y - camera.pos_y) * scale_y - (entity->size_y * scale_y);
+        float pt_y = window_height -
+                     (0 - entity->size_y - camera.pos_y) * scale_y -
+                     (entity->size_y * scale_y);
         SDL_RenderDrawPoint(renderer, pt_x, pt_y);
 
         SDL_SetRenderDrawColor(renderer, 0x26, 0x26, 0x26, 0xFF);
@@ -489,6 +524,27 @@ void Graphics::draw_queue(Camera camera, Uint32 current_ticks) {
     }
   }
   SDL_RenderPresent(renderer);
+}
+
+void Graphics::draw_line(Point& a, Point& b, Camera& camera) {
+  int window_width;
+  int window_height;
+  SDL_GetWindowSize(window, &window_width, &window_height);
+  float scale_x = window_width / camera.FOV_width;
+  float scale_y = window_height / camera.FOV_height;
+
+  float a_x = (a.x - camera.pos_x) * scale_x;
+  float a_y = window_height - (a.y - camera.pos_y) * scale_y;
+
+  float b_x = (b.x - camera.pos_x) * scale_x;
+  float b_y = window_height - (b.y - camera.pos_y) * scale_y;
+
+  SDL_SetRenderDrawColor(renderer, 0xbf, 0x1b, 0x38, 0xFF);
+
+  SDL_RenderDrawLine(renderer, a_x, a_y, b_x, b_y);
+  
+  SDL_RenderPresent(renderer);
+  SDL_SetRenderDrawColor(renderer, 0x26, 0x26, 0x26, 0xFF);
 }
 
 void Graphics::clear_queue() {
@@ -572,7 +628,11 @@ bool InputHandler::is_held(const SDL_Scancode& key) {
 
 class CollisionProcessor {
  public:
+  Vector2 simplex[3];
+  Vector2 collision_normal;
+  float collision_depth;
   bool debug{false};
+
   bool AABB_overlap(Entity* A, Entity* B);
   std::vector<std::pair<Entity*, Entity*>> brute_force(
       std::vector<Entity*> entities);
@@ -581,6 +641,8 @@ class CollisionProcessor {
   bool GJK(Entity* A, Entity* B);
   bool same_direction(Vector2& d, const Vector2& ao);
   Vector2 triple_product(Vector2& a, Vector2& b, Vector2& c);
+  void EPA(Entity* A, Entity* B);
+  Edge FindClosestEdge(std::vector<Point>& polygon);
 
   void evaluate_collisions(std::vector<Entity*> entities);
   void reset_collisions(std::vector<Entity*> entities);
@@ -609,6 +671,10 @@ std::vector<std::pair<Entity*, Entity*>> CollisionProcessor::brute_force(
   std::vector<std::pair<Entity*, Entity*>> pairs;
 
   for (int i = 0; i < entities.size(); i++) {
+
+    entities[i]->calculate_vertices();
+    entities[i]->calculate_vertices_in_WCS();
+
     for (int j = i + 1; j < entities.size(); j++) {
       if (AABB_overlap(entities[i], entities[j])) {
         std::pair<Entity*, Entity*> pair(entities[i], entities[j]);
@@ -650,7 +716,7 @@ Vector2 CollisionProcessor::triple_product(Vector2& a, Vector2& b, Vector2& c) {
   // versions of this function that seem to use completely different math,
   // and I don't think any are actually "triple product"...
   Vector2 result;
-  
+
   float ac = a.dot(c);
   float bc = b.dot(c);
 
@@ -663,10 +729,9 @@ Vector2 CollisionProcessor::triple_product(Vector2& a, Vector2& b, Vector2& c) {
 bool CollisionProcessor::GJK(Entity* A, Entity* B) {
   // Adapted from: https://github.com/kroitor/gjk.c/blob/master/gjk.c
 
-  A->calculate_vertices_in_WCS();
-  B->calculate_vertices_in_WCS();
+  // A->calculate_vertices_in_WCS();
+  // B->calculate_vertices_in_WCS();
   int index = 0;
-  Vector2 simplex[3];
 
   Vector2 d(1, 0);
 
@@ -678,9 +743,7 @@ bool CollisionProcessor::GJK(Entity* A, Entity* B) {
 
   d = a * -1;
 
-  // int iter{0};
   while (true) {
-    // std::cout << iter << "\n";
     Vector2 a = support(A, B, d);
     index++;
     simplex[index] = a;
@@ -723,9 +786,91 @@ bool CollisionProcessor::GJK(Entity* A, Entity* B) {
     }
     simplex[1] = simplex[2];
     --index;
-    // iter++;
   }
   return false;
+}
+
+void CollisionProcessor::EPA(Entity* A, Entity* B) {
+  // Adapted from: https://dyn4j.org/2010/05/epa-expanding-polytope-algorithm/
+
+  // Convert simplex to vector of Points (aka a polygon)
+  std::vector<Point> polygon;
+  Point pt;
+
+  for (int idx = 0; idx < 3; idx++) {
+    pt.x = simplex[idx][0];
+    pt.y = simplex[idx][1];
+
+    polygon.push_back(pt);
+  }
+
+  while (true) {
+    // Find edge closest to origin
+    Edge e = FindClosestEdge(polygon);
+
+    // Get support vector along edge normal
+    Vector2 p = support(A, B, e.normal);
+
+    // Dot product support vector with normal
+    float d = p.dot(e.normal);
+    
+    // If that dot product minus length of edge is less than tolerance
+    if (abs(d - e.distance) < .001) {
+      // penetration vector is the edge normal
+      // penetration depth is d
+      collision_normal = e.normal;
+      collision_depth = d;
+
+      return;
+    } else {
+      // Convert Vector2 to point
+      pt.x = p[0];
+      pt.y = p[1];
+
+      // Add support point to polygon
+      polygon.insert(polygon.begin() + e.index, pt);
+    }
+  }
+}
+
+Edge CollisionProcessor::FindClosestEdge(std::vector<Point>& polygon) {
+  Edge edge;
+
+  edge.distance = std::numeric_limits<float>::max();
+
+  // For each point of simplex
+  for (int idx = 0; idx < polygon.size(); idx++) {
+    // Get the next point's index to form an edge
+    int idx_next_point;
+
+    if (idx == polygon.size() - 1)
+      idx_next_point = 0;
+    else
+      idx_next_point = idx + 1;
+
+    // Create vector of edge by subtracting start point from end point
+    Vector2 edge_vect(polygon[idx_next_point] - polygon[idx]);
+
+    // Get vector from the origin to current point
+    Vector2 oa = polygon[idx];
+
+    // triple_product(e, oa, e) to get vector from edge to origin
+    Vector2 n = triple_product(edge_vect, oa, edge_vect);
+
+    // Convert that vector to unit vector
+    n.convert_to_unit();
+
+    // Get distance from origin to edge
+    float distance = n.dot(oa);
+
+    // Check if this distance is closer than previous
+    if (distance < edge.distance) {
+      edge.distance = distance;
+      edge.normal = n;
+      edge.index = idx_next_point;
+    }
+  }
+  return edge;
 }
 
 bool CollisionProcessor::same_direction(Vector2& d, const Vector2& ao) {
@@ -740,6 +885,8 @@ void CollisionProcessor::evaluate_collisions(std::vector<Entity*> entities) {
     if (GJK(pairs[idx].first, pairs[idx].second)) {
       pairs[idx].first->collision = true;
       pairs[idx].second->collision = true;
+
+      EPA(pairs[idx].first, pairs[idx].second);
     }
   }
 }
