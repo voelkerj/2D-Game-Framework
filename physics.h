@@ -5,7 +5,16 @@
 
 #include "math.h"
 
-// Entities are assumed to have uniform density, therefore the center of mass and geometric center are the same.
+struct State {
+  float pos_x{0};
+  float pos_y{0};
+  float vel_x{0};
+  float vel_y{0};
+  float acc_x{0};
+  float acc_y{0};
+  float angular_velocity{0};  // Degrees per second
+  float angle{0};             // Degrees
+};
 
 class RVector {
  public:
