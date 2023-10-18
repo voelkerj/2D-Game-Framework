@@ -418,10 +418,13 @@ void Graphics::draw_line(Point& a, Point& b) {
 void Graphics::draw_vector(Vector2& vector) {
   SDL_SetRenderDrawColor(renderer, 0xe8, 0x11, 0x23, 0xFF);
 
+  float a_x = (0 - current_camera.pos_x) * scale_x;
+  float a_y = window_height - (0 - current_camera.pos_y) * scale_y;
+
   float b_x = (vector[0] - current_camera.pos_x) * scale_x;
   float b_y = window_height - (vector[1] - current_camera.pos_y) * scale_y;
 
-  SDL_RenderDrawLine(renderer, 0, 0, b_x, b_y);
+  SDL_RenderDrawLine(renderer, a_x, a_y, b_x, b_y);
 
   SDL_RenderPresent(renderer);
   SDL_SetRenderDrawColor(renderer, 0x26, 0x26, 0x26, 0xFF);

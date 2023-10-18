@@ -309,7 +309,7 @@ CMakeFiles/Platform_Demo.dir/Platform.cpp.obj: C:/Users/johnw/Code/2D-Game-Frame
   C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_version.h \
   C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/begin_code.h \
   C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/close_code.h \
-  C:/Users/johnw/Code/2D-Game-Framework/physics.h \
+  C:/Users/johnw/Code/2D-Game-Framework/geometry.h \
   C:/msys64/mingw64/include/c++/12.2.0/math.h \
   C:/msys64/mingw64/include/c++/12.2.0/cmath \
   C:/msys64/mingw64/include/math.h \
@@ -326,7 +326,8 @@ CMakeFiles/Platform_Demo.dir/Platform.cpp.obj: C:/Users/johnw/Code/2D-Game-Frame
   C:/msys64/mingw64/include/c++/12.2.0/tr1/modified_bessel_func.tcc \
   C:/msys64/mingw64/include/c++/12.2.0/tr1/poly_hermite.tcc \
   C:/msys64/mingw64/include/c++/12.2.0/tr1/poly_laguerre.tcc \
-  C:/msys64/mingw64/include/c++/12.2.0/tr1/riemann_zeta.tcc
+  C:/msys64/mingw64/include/c++/12.2.0/tr1/riemann_zeta.tcc \
+  C:/Users/johnw/Code/2D-Game-Framework/physics.h
 
 
 C:/msys64/mingw64/include/c++/12.2.0/cstdint:
@@ -945,7 +946,7 @@ C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_timer.h:
 
 C:/Libraries/SDL2_image-2.6.2/x86_64-w64-mingw32/include/SDL2/SDL_image.h:
 
-C:/Users/johnw/Code/2D-Game-Framework/physics.h:
+C:/Users/johnw/Code/2D-Game-Framework/geometry.h:
 
 C:/msys64/mingw64/include/c++/12.2.0/math.h:
 
@@ -974,3 +975,5 @@ C:/msys64/mingw64/include/c++/12.2.0/tr1/modified_bessel_func.tcc:
 C:/msys64/mingw64/include/c++/12.2.0/tr1/poly_hermite.tcc:
 
 C:/msys64/mingw64/include/c++/12.2.0/tr1/riemann_zeta.tcc:
+
+C:/Users/johnw/Code/2D-Game-Framework/physics.h:
