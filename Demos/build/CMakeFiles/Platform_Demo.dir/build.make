@@ -92,9 +92,9 @@ Platform_Demo_EXTERNAL_OBJECTS =
 
 Platform_Demo.exe: CMakeFiles/Platform_Demo.dir/Platform.cpp.obj
 Platform_Demo.exe: CMakeFiles/Platform_Demo.dir/build.make
-Platform_Demo.exe: C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/lib/libSDL2main.a
-Platform_Demo.exe: C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/lib/libSDL2.dll.a
-Platform_Demo.exe: C:/Users/johnw/Libraries/SDL2_image-2.6.3/x86_64-w64-mingw32/lib/libSDL2_image.dll.a
+Platform_Demo.exe: C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/lib/libSDL2main.a
+Platform_Demo.exe: C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/lib/libSDL2.dll.a
+Platform_Demo.exe: C:/Libraries/SDL2_image-2.6.2/x86_64-w64-mingw32/lib/libSDL2_image.dll.a
 Platform_Demo.exe: CMakeFiles/Platform_Demo.dir/linkLibs.rsp
 Platform_Demo.exe: CMakeFiles/Platform_Demo.dir/objects1
 Platform_Demo.exe: CMakeFiles/Platform_Demo.dir/link.txt

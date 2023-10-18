@@ -7,12 +7,6 @@ int main(int argc, char** argv) {
 
   Graphics graphics;
 
-  Camera camera;
-  camera.pos_x = 0;
-  camera.pos_y = 0;
-  camera.FOV_width = 19.2 * 2;
-  camera.FOV_height = 10.8 * 2;
-
   FrameManager frameManager;
   frameManager.fps = 60;
 
@@ -168,16 +162,16 @@ int main(int argc, char** argv) {
       }
 
       if (inputs.is_held(SDL_SCANCODE_UP) || inputs.was_pressed(SDL_SCANCODE_UP)){
-        camera.pos_y += 0.2;
+        graphics.current_camera.pos_y += 0.2;
       }
       if (inputs.is_held(SDL_SCANCODE_DOWN) || inputs.was_pressed(SDL_SCANCODE_DOWN)){
-        camera.pos_y -= 0.2;
+        graphics.current_camera.pos_y -= 0.2;
       }
       if (inputs.is_held(SDL_SCANCODE_LEFT) || inputs.was_pressed(SDL_SCANCODE_LEFT)){
-        camera.pos_x -= 0.2;
+        graphics.current_camera.pos_x -= 0.2;
       }
       if (inputs.is_held(SDL_SCANCODE_RIGHT) || inputs.was_pressed(SDL_SCANCODE_RIGHT)){
-        camera.pos_x += 0.2;
+        graphics.current_camera.pos_x += 0.2;
       }
 
       if (inputs.is_held(SDL_SCANCODE_PAGEUP))
@@ -218,7 +212,7 @@ int main(int argc, char** argv) {
 
     collisions.evaluate_collisions(entities);
 
-    graphics.draw_queue(camera, SDL_GetTicks());
+    graphics.draw_queue(SDL_GetTicks());
 
     if (graphics.debug) {
       // Draw origin
@@ -228,16 +222,16 @@ int main(int argc, char** argv) {
       Point up(0, .5);
       Point down(0, -.5);
 
-      graphics.draw_line(origin, right, camera);
-      graphics.draw_line(origin, left, camera);
-      graphics.draw_line(origin, up, camera);
-      graphics.draw_line(origin, down, camera);
+      graphics.draw_line(origin, right);
+      graphics.draw_line(origin, left);
+      graphics.draw_line(origin, up);
+      graphics.draw_line(origin, down);
     }
 
     if (collisions.debug) {
       Point a(0,0);
       Point b(collisions.collision_normal[0], collisions.collision_normal[1]);
-      graphics.draw_line(a, b, camera);
+      graphics.draw_line(a, b);
     }
 
     previous_ticks = SDL_GetTicks();

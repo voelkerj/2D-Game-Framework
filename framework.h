@@ -9,8 +9,8 @@
 
 #include "SDL.h"
 #include "SDL_image.h"
-#include "physics.h"
 #include "geometry.h"
+#include "physics.h"
 
 struct Camera {
   // Position of Camera's center point
@@ -264,30 +264,45 @@ class Graphics {
  public:
   std::vector<Entity*> queue;
   SDL_Window* window;
+  int window_width;
+  int window_height;
   SDL_Renderer* renderer;
+  Camera current_camera;
+  float scale_x;
+  float scale_y;
   bool debug{false};
 
   Graphics();
   ~Graphics();
 
   void add_to_queue(Entity& entity);
-  void draw_queue(Camera camera, Uint32 current_ticks);
+  void draw_queue(Uint32 current_ticks);
   void clear_queue();
 
-  void draw_line(Point& a, Point& b, Camera& camera);
-  void draw_vector(Vector2& vector, Camera& camera);
+  void draw_line(Point& a, Point& b);
+  void draw_vector(Vector2& vector);
 
   void clear_screen();
 
-  bool point_within_camera_view(float x, float y, Camera camera);
+  bool point_within_camera_view(float x, float y);
 };
 
 Graphics::Graphics() {
   window = SDL_CreateWindow("Framework", SDL_WINDOWPOS_UNDEFINED,
                             SDL_WINDOWPOS_UNDEFINED, 1, 1,
                             SDL_WINDOW_FULLSCREEN_DESKTOP);
+  SDL_GetWindowSize(window, &window_width, &window_height);
+
   renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-  SDL_SetRenderDrawColor(renderer, 0x26, 0x26, 0x26, 0xFF);
+  SDL_SetRenderDrawColor(renderer, 0x26, 0x26, 0x26, 0xFF); 
+
+  current_camera.pos_x = 0;
+  current_camera.pos_y = 0;
+  current_camera.FOV_width = 19.2 * 2;
+  current_camera.FOV_height = 10.8 * 2;
+
+  scale_x = window_width / current_camera.FOV_width;
+  scale_y = window_height / current_camera.FOV_height;
 }
 
 Graphics::~Graphics() {
@@ -298,30 +313,32 @@ void Graphics::add_to_queue(Entity& entity) {
   queue.push_back(&entity);
 }
 
-bool Graphics::point_within_camera_view(float x, float y, Camera camera) {
+bool Graphics::point_within_camera_view(float x, float y) {
 
-  if (x >= camera.pos_x & x <= camera.pos_x + camera.FOV_width &
-      y >= camera.pos_y & y <= camera.pos_y + camera.FOV_height)
+  if (x >= current_camera.pos_x &
+      x <= current_camera.pos_x + current_camera.FOV_width &
+      y >= current_camera.pos_y &
+      y <= current_camera.pos_y + current_camera.FOV_height)
     return true;
 
   return false;
 }
 
-void Graphics::draw_queue(Camera camera, Uint32 current_ticks) {
+void Graphics::draw_queue(Uint32 current_ticks) {
   for (auto& entity : queue) {
     // If entity is within the camera bounds
-    if (point_within_camera_view(entity->state.pos_x - entity->size_x / 2,
-                                 entity->state.pos_y - entity->size_y / 2,
-                                 camera) ||  // Check Bottom-Left
-        point_within_camera_view(entity->state.pos_x - entity->size_x / 2,
-                                 entity->state.pos_y + entity->size_y / 2,
-                                 camera) ||  // Check Top-Left
-        point_within_camera_view(entity->state.pos_x + entity->size_x / 2,
-                                 entity->state.pos_y - entity->size_y / 2,
-                                 camera) ||  // Check Bottom-Right
-        point_within_camera_view(entity->state.pos_x + entity->size_x / 2,
-                                 entity->state.pos_y + entity->size_y / 2,
-                                 camera))  // Check Top-Right
+    if (point_within_camera_view(
+            entity->state.pos_x - entity->size_x / 2,
+            entity->state.pos_y - entity->size_y / 2) ||  // Check Bottom-Left
+        point_within_camera_view(
+            entity->state.pos_x - entity->size_x / 2,
+            entity->state.pos_y + entity->size_y / 2) ||  // Check Top-Left
+        point_within_camera_view(
+            entity->state.pos_x + entity->size_x / 2,
+            entity->state.pos_y - entity->size_y / 2) ||  // Check Bottom-Right
+        point_within_camera_view(
+            entity->state.pos_x + entity->size_x / 2,
+            entity->state.pos_y + entity->size_y / 2))  // Check Top-Right
     {
 
       // Draw Entity
@@ -329,19 +346,14 @@ void Graphics::draw_queue(Camera camera, Uint32 current_ticks) {
 
       SDL_Rect clipping_rect = animation.get_frame(current_ticks);
 
-      int window_width;
-      int window_height;
-      SDL_GetWindowSize(window, &window_width, &window_height);
-
-      float scale_x = window_width / camera.FOV_width;
-      float scale_y = window_height / camera.FOV_height;
-
       SDL_Rect destination_rect;
       destination_rect.x =
-          (entity->state.pos_x - entity->size_x / 2 - camera.pos_x) * scale_x;
+          (entity->state.pos_x - entity->size_x / 2 - current_camera.pos_x) *
+          scale_x;
       destination_rect.y =
           window_height -
-          (entity->state.pos_y - entity->size_y / 2 - camera.pos_y) * scale_y -
+          (entity->state.pos_y - entity->size_y / 2 - current_camera.pos_y) *
+              scale_y -
           (entity->size_y * scale_y);
       destination_rect.w = entity->size_x * scale_x;
       destination_rect.h = entity->size_y * scale_y;
@@ -363,10 +375,11 @@ void Graphics::draw_queue(Camera camera, Uint32 current_ticks) {
         for (Point point : entity->vertices_WCS) {
           SDL_SetRenderDrawColor(renderer, 0x48, 0xff, 0x82, 0xFF);
 
-          float pt_x = (point.x - camera.pos_x) * scale_x;
-          float pt_y = window_height -
-                       (point.y - entity->size_y - camera.pos_y) * scale_y -
-                       (entity->size_y * scale_y);
+          float pt_x = (point.x - current_camera.pos_x) * scale_x;
+          float pt_y =
+              window_height -
+              (point.y - entity->size_y - current_camera.pos_y) * scale_y -
+              (entity->size_y * scale_y);
 
           SDL_RenderDrawPoint(renderer, pt_x, pt_y);
         }
@@ -374,9 +387,9 @@ void Graphics::draw_queue(Camera camera, Uint32 current_ticks) {
         // Display origin
         SDL_SetRenderDrawColor(renderer, 0xbf, 0x1b, 0x38, 0xFF);
 
-        float pt_x = (0 - camera.pos_x) * scale_x;
+        float pt_x = (0 - current_camera.pos_x) * scale_x;
         float pt_y = window_height -
-                     (0 - entity->size_y - camera.pos_y) * scale_y -
+                     (0 - entity->size_y - current_camera.pos_y) * scale_y -
                      (entity->size_y * scale_y);
         SDL_RenderDrawPoint(renderer, pt_x, pt_y);
 
@@ -387,43 +400,29 @@ void Graphics::draw_queue(Camera camera, Uint32 current_ticks) {
   SDL_RenderPresent(renderer);
 }
 
-void Graphics::draw_line(Point& a, Point& b, Camera& camera) {
-  int window_width;
-  int window_height;
-  SDL_GetWindowSize(window, &window_width, &window_height);
-  float scale_x = window_width / camera.FOV_width;
-  float scale_y = window_height / camera.FOV_height;
+void Graphics::draw_line(Point& a, Point& b) {
+  float a_x = (a.x - current_camera.pos_x) * scale_x;
+  float a_y = window_height - (a.y - current_camera.pos_y) * scale_y;
 
-  float a_x = (a.x - camera.pos_x) * scale_x;
-  float a_y = window_height - (a.y - camera.pos_y) * scale_y;
-
-  float b_x = (b.x - camera.pos_x) * scale_x;
-  float b_y = window_height - (b.y - camera.pos_y) * scale_y;
+  float b_x = (b.x - current_camera.pos_x) * scale_x;
+  float b_y = window_height - (b.y - current_camera.pos_y) * scale_y;
 
   SDL_SetRenderDrawColor(renderer, 0xbf, 0x1b, 0x38, 0xFF);
 
   SDL_RenderDrawLine(renderer, a_x, a_y, b_x, b_y);
-  
+
   SDL_RenderPresent(renderer);
   SDL_SetRenderDrawColor(renderer, 0x26, 0x26, 0x26, 0xFF);
 }
 
-void Graphics::draw_vector(Vector2& vector, Camera& camera) {
-  int window_width;
-  int window_height;
-  SDL_GetWindowSize(window, &window_width, &window_height);
-  float scale_x = window_width / camera.FOV_width;
-  float scale_y = window_height / camera.FOV_height;
-  float scale_x = window_width / camera.FOV_width;
-  float scale_y = window_height / camera.FOV_height;
-
+void Graphics::draw_vector(Vector2& vector) {
   SDL_SetRenderDrawColor(renderer, 0xe8, 0x11, 0x23, 0xFF);
 
-  float b_x = (vector[0] - camera.pos_x) * scale_x;
-  float b_y = window_height - (vector[1] - camera.pos_y) * scale_y;
+  float b_x = (vector[0] - current_camera.pos_x) * scale_x;
+  float b_y = window_height - (vector[1] - current_camera.pos_y) * scale_y;
 
   SDL_RenderDrawLine(renderer, 0, 0, b_x, b_y);
-  
+
   SDL_RenderPresent(renderer);
   SDL_SetRenderDrawColor(renderer, 0x26, 0x26, 0x26, 0xFF);
 }
@@ -697,7 +696,7 @@ void CollisionProcessor::EPA(Entity* A, Entity* B) {
 
     // Dot product support vector with normal
     float d = p.dot(e.normal);
-    
+
     // If that dot product minus length of edge is less than tolerance
     if (abs(d - e.distance) < .001) {
       // penetration vector is the edge normal
