@@ -275,6 +275,7 @@ class Graphics {
   void clear_queue();
 
   void draw_line(Point& a, Point& b, Camera& camera);
+  void draw_vector(Vector2& vector, Camera& camera);
 
   void clear_screen();
 
@@ -402,6 +403,26 @@ void Graphics::draw_line(Point& a, Point& b, Camera& camera) {
   SDL_SetRenderDrawColor(renderer, 0xbf, 0x1b, 0x38, 0xFF);
 
   SDL_RenderDrawLine(renderer, a_x, a_y, b_x, b_y);
+  
+  SDL_RenderPresent(renderer);
+  SDL_SetRenderDrawColor(renderer, 0x26, 0x26, 0x26, 0xFF);
+}
+
+void Graphics::draw_vector(Vector2& vector, Camera& camera) {
+  int window_width;
+  int window_height;
+  SDL_GetWindowSize(window, &window_width, &window_height);
+  float scale_x = window_width / camera.FOV_width;
+  float scale_y = window_height / camera.FOV_height;
+  float scale_x = window_width / camera.FOV_width;
+  float scale_y = window_height / camera.FOV_height;
+
+  SDL_SetRenderDrawColor(renderer, 0xe8, 0x11, 0x23, 0xFF);
+
+  float b_x = (vector[0] - camera.pos_x) * scale_x;
+  float b_y = window_height - (vector[1] - camera.pos_y) * scale_y;
+
+  SDL_RenderDrawLine(renderer, 0, 0, b_x, b_y);
   
   SDL_RenderPresent(renderer);
   SDL_SetRenderDrawColor(renderer, 0x26, 0x26, 0x26, 0xFF);
