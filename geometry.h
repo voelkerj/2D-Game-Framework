@@ -2,6 +2,7 @@
 #define GEOMETRY_H
 
 #include "math.h"
+#include <iostream>
 
 class Point {
  public:

@@ -1,4 +1,4 @@
-#include "../framework.h"
+#include "../framework_main.h"
 
 int main(int argc, char** argv) {
 
