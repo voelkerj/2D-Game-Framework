@@ -169,7 +169,7 @@ void Entity::calculate_MOI() {
 void Entity::calculate_vertices() {
   vertices.clear();
   if (shape == circle) {
-    for (int deg = 0; deg < 360; deg++) {
+    for (int deg = 360; deg > 0; deg -= 5) {
       Point vertex;
 
       // Body coordinate system
@@ -185,13 +185,13 @@ void Entity::calculate_vertices() {
     vertex.x = -size_x / 2;
     vertex.y = -size_y / 2;
     Point vertex2;
-    vertex2.x = -size_x / 2;
-    vertex2.y = size_y / 2;
+    vertex2.x = size_x / 2;
+    vertex2.y = -size_y / 2;
     Point vertex3;
     vertex3.x = size_x / 2;
-    vertex3.y = -size_y / 2;
+    vertex3.y = size_y / 2;
     Point vertex4;
-    vertex4.x = size_x / 2;
+    vertex4.x = -size_x / 2;
     vertex4.y = size_y / 2;
 
     vertices.push_back(vertex);
@@ -262,7 +262,10 @@ float Entity::get_max_y_WCS() {
 
 class Graphics {
  public:
-  std::vector<Entity*> queue;
+  std::vector<Entity*> entity_queue;
+  std::vector<std::pair<Point*, Point*>> line_queue;
+  std::vector<Vector2*> vector_queue;
+  std::vector<Point*> point_queue;
   SDL_Window* window;
   int window_width;
   int window_height;
@@ -279,11 +282,15 @@ class Graphics {
   void draw_queue(Uint32 current_ticks);
   void clear_queue();
 
-  void draw_line(Point& a, Point& b);
-  void draw_vector(Vector2& vector);
+  void add_to_queue(Point& a, Point& b);
+  void add_to_queue(Point& a);
 
   void clear_screen();
 
+  private:
+  void draw_entity(Uint32 current_ticks, Entity* entity);
+  void draw_line(Point* a, Point* b);
+  void draw_point(Point* a);
   bool point_within_camera_view(float x, float y);
 };
 
@@ -310,7 +317,16 @@ Graphics::~Graphics() {
 }
 
 void Graphics::add_to_queue(Entity& entity) {
-  queue.push_back(&entity);
+  entity_queue.push_back(&entity);
+}
+
+void Graphics::add_to_queue(Point& a, Point& b) {
+  std::pair<Point*, Point*> line(&a,&b);
+  line_queue.push_back(line);
+}
+
+void Graphics::add_to_queue(Point& a) {
+  point_queue.push_back(&a);
 }
 
 bool Graphics::point_within_camera_view(float x, float y) {
@@ -325,7 +341,27 @@ bool Graphics::point_within_camera_view(float x, float y) {
 }
 
 void Graphics::draw_queue(Uint32 current_ticks) {
-  for (auto& entity : queue) {
+  // Draw Entities
+  for (auto& entity : entity_queue) {
+    draw_entity(current_ticks, entity);
+  }
+
+  // Draw Points
+  for (auto& point : point_queue) {
+    draw_point(point);
+  }
+
+  // Draw Lines
+  for (auto& line : line_queue) {
+    draw_line(line.first, line.second);
+  }
+
+  SDL_SetRenderDrawColor(renderer, 0x26, 0x26, 0x26, 0xFF);
+  SDL_RenderPresent(renderer);
+}
+
+void Graphics::draw_entity(Uint32 current_ticks, Entity* entity) {
+  
     // If entity is within the camera bounds
     if (point_within_camera_view(
             entity->state.pos_x - entity->size_x / 2,
@@ -396,42 +432,43 @@ void Graphics::draw_queue(Uint32 current_ticks) {
         SDL_SetRenderDrawColor(renderer, 0x26, 0x26, 0x26, 0xFF);
       }
     }
-  }
-  SDL_RenderPresent(renderer);
 }
 
-void Graphics::draw_line(Point& a, Point& b) {
-  float a_x = (a.x - current_camera.pos_x) * scale_x;
-  float a_y = window_height - (a.y - current_camera.pos_y) * scale_y;
+void Graphics::draw_line(Point* a, Point* b) {
+  float a_x = (a->x - current_camera.pos_x) * scale_x;
+  float a_y = window_height - (a->y - current_camera.pos_y) * scale_y;
 
-  float b_x = (b.x - current_camera.pos_x) * scale_x;
-  float b_y = window_height - (b.y - current_camera.pos_y) * scale_y;
+  float b_x = (b->x - current_camera.pos_x) * scale_x;
+  float b_y = window_height - (b->y - current_camera.pos_y) * scale_y;
 
   SDL_SetRenderDrawColor(renderer, 0xbf, 0x1b, 0x38, 0xFF);
 
   SDL_RenderDrawLine(renderer, a_x, a_y, b_x, b_y);
-
-  SDL_RenderPresent(renderer);
-  SDL_SetRenderDrawColor(renderer, 0x26, 0x26, 0x26, 0xFF);
 }
 
-void Graphics::draw_vector(Vector2& vector) {
-  SDL_SetRenderDrawColor(renderer, 0xe8, 0x11, 0x23, 0xFF);
+void Graphics::draw_point(Point* a) {
+  SDL_SetRenderDrawColor(renderer, 0xff, 0xe9, 0x1a, 0xFF);
 
-  float a_x = (0 - current_camera.pos_x) * scale_x;
-  float a_y = window_height - (0 - current_camera.pos_y) * scale_y;
+  float a_x = (a->x - current_camera.pos_x) * scale_x;
+  float a_y = window_height - (a->y - current_camera.pos_y) * scale_y;
 
-  float b_x = (vector[0] - current_camera.pos_x) * scale_x;
-  float b_y = window_height - (vector[1] - current_camera.pos_y) * scale_y;
+  SDL_RenderDrawPoint(renderer, a_x, a_y); // Actual Point
 
-  SDL_RenderDrawLine(renderer, a_x, a_y, b_x, b_y);
-
-  SDL_RenderPresent(renderer);
-  SDL_SetRenderDrawColor(renderer, 0x26, 0x26, 0x26, 0xFF);
+  SDL_RenderDrawPoint(renderer, a_x + 1, a_y);
+  SDL_RenderDrawPoint(renderer, a_x - 1, a_y);
+  SDL_RenderDrawPoint(renderer, a_x, a_y + 1);
+  SDL_RenderDrawPoint(renderer, a_x, a_y - 1);
+  SDL_RenderDrawPoint(renderer, a_x + .7071, a_y + .7071);
+  SDL_RenderDrawPoint(renderer, a_x + .7071, a_y - .7071);
+  SDL_RenderDrawPoint(renderer, a_x - .7071, a_y - .7071);
+  SDL_RenderDrawPoint(renderer, a_x - .7071, a_y + .7071);
 }
 
 void Graphics::clear_queue() {
-  queue.clear();
+  entity_queue.clear();
+  point_queue.clear();
+  line_queue.clear();
+  vector_queue.clear();
 }
 
 void Graphics::clear_screen() {
@@ -514,6 +551,7 @@ class CollisionProcessor {
   Vector2 simplex[3];
   Vector2 collision_normal;
   float collision_depth;
+  std::vector<Point> _manifold;
   bool debug{false};
 
   bool AABB_overlap(Entity* A, Entity* B);
@@ -526,9 +564,10 @@ class CollisionProcessor {
   Vector2 triple_product(Vector2& a, Vector2& b, Vector2& c);
   void EPA(Entity* A, Entity* B);
   Edge FindClosestEdge(std::vector<Point>& polygon);
+  std::vector<Point> clip(Point v1, Point v2, Vector2 normal, float o);
 
-  void FindCollisionManifold();
-  // Edge FindRelevantEdge(Entity* entity);
+  std::vector<Point> FindCollisionManifold(Entity* A, Entity* B);
+  Edge FindRelevantEdge(Entity* entity, bool positive_direction);
 
   void evaluate_collisions(std::vector<Entity*> entities);
   void reset_collisions(std::vector<Entity*> entities);
@@ -546,9 +585,6 @@ bool CollisionProcessor::AABB_overlap(Entity* A, Entity* B) {
   if (d2x > 0.0f || d2y > 0.0f)
     return false;
 
-  // if (debug)
-  //   std::cout << A->name << " and " << B->name << " potentially colliding!\n";
-
   return true;
 }
 
@@ -557,10 +593,6 @@ std::vector<std::pair<Entity*, Entity*>> CollisionProcessor::brute_force(
   std::vector<std::pair<Entity*, Entity*>> pairs;
 
   for (int i = 0; i < entities.size(); i++) {
-
-    entities[i]->calculate_vertices();
-    entities[i]->calculate_vertices_in_WCS();
-
     for (int j = i + 1; j < entities.size(); j++) {
       if (AABB_overlap(entities[i], entities[j])) {
         std::pair<Entity*, Entity*> pair(entities[i], entities[j]);
@@ -592,6 +624,7 @@ Point CollisionProcessor::furthest_point(Entity* entity, Vector2& d) {
 
 Vector2 CollisionProcessor::support(Entity* A, Entity* B, Vector2& d) {
   Vector2 d_inv = d * -1;
+
   Point pt_two = furthest_point(B, d_inv);
 
   return furthest_point(A, d) - pt_two;
@@ -615,8 +648,6 @@ Vector2 CollisionProcessor::triple_product(Vector2& a, Vector2& b, Vector2& c) {
 bool CollisionProcessor::GJK(Entity* A, Entity* B) {
   // Adapted from: https://github.com/kroitor/gjk.c/blob/master/gjk.c
 
-  // A->calculate_vertices_in_WCS();
-  // B->calculate_vertices_in_WCS();
   int index = 0;
 
   Vector2 d(1, 0);
@@ -690,6 +721,7 @@ void CollisionProcessor::EPA(Entity* A, Entity* B) {
     polygon.push_back(pt);
   }
 
+  int iter{0};
   while (true) {
     // Find edge closest to origin
     Edge e = FindClosestEdge(polygon);
@@ -701,7 +733,7 @@ void CollisionProcessor::EPA(Entity* A, Entity* B) {
     float d = p.dot(e.normal);
 
     // If that dot product minus length of edge is less than tolerance
-    if (abs(d - e.distance) < .001) {
+    if (abs(d - e.distance) < .00001 || iter == 99) {
       // penetration vector is the edge normal
       // penetration depth is d
       collision_normal = e.normal;
@@ -715,6 +747,8 @@ void CollisionProcessor::EPA(Entity* A, Entity* B) {
 
       // Add support point to polygon
       polygon.insert(polygon.begin() + e.index, pt);
+
+      iter++;
     }
   }
 }
@@ -763,7 +797,180 @@ bool CollisionProcessor::same_direction(Vector2& d, const Vector2& ao) {
   return d.dot(ao) > 0;
 }
 
+void CollisionProcessor::reset_collisions(std::vector<Entity*> entities) {
+  _manifold.clear();
+  for (int idx = 0; idx < entities.size(); idx++) {
+    entities[idx]->collision = false;
+  }
+}
+
+Edge CollisionProcessor::FindRelevantEdge(Entity* entity, bool positive_direction) {
+  Vector2 normal;
+  if (positive_direction)
+    normal = collision_normal;
+  else
+    normal = collision_normal * -1;
+
+  // Find farthest vertex along separation normal
+  float highest_dot = -std::numeric_limits<float>::max();
+  int vertex_idx{0};
+
+  for (int idx = 0; idx < entity->vertices_WCS.size(); idx++) {
+    Vector2 vertex(entity->vertices_WCS[idx]);
+    float projection = normal.dot(vertex);
+
+    if (projection > highest_dot) {
+      highest_dot = projection;
+      vertex_idx = idx;
+    }
+  }
+
+  Vector2 vertex_vect(entity->vertices_WCS[vertex_idx]);
+
+  // Get the adjacent edges
+  int next_idx;
+  int prev_idx;
+
+  if (vertex_idx == entity->vertices_WCS.size() - 1)
+    next_idx = 0;
+  else
+    next_idx = vertex_idx + 1;
+
+  if (vertex_idx == 0)
+    prev_idx = entity->vertices_WCS.size() - 1;
+  else
+    prev_idx = vertex_idx - 1;
+
+  Vector2 v0(entity->vertices_WCS[prev_idx]);
+  Vector2 v1(entity->vertices_WCS[next_idx]);
+
+  Vector2 left = vertex_vect - v1;
+  left.convert_to_unit();
+
+  Vector2 right = vertex_vect - v0;
+  right.convert_to_unit();
+
+  // Find the edge containing that vertex that is most perpendicular to collision normal
+  // Most perpendicular edge will have a dot product closer to zero
+  Point pt1, pt2;
+  if (right.dot(normal) < left.dot(normal)) { // Maybe this needs to be abs() of each dot product...TBD!
+    pt1 = entity->vertices_WCS[prev_idx];
+    pt2 = entity->vertices_WCS[vertex_idx];
+  } else {
+    pt1 = entity->vertices_WCS[vertex_idx];
+    pt2 = entity->vertices_WCS[next_idx];
+  }
+
+  Edge edge;
+  edge.v1 = pt1;
+  edge.v2 = pt2;
+  edge.max = entity->vertices_WCS[vertex_idx];
+  return edge;
+}
+
+std::vector<Point> CollisionProcessor::FindCollisionManifold(Entity* A, Entity* B) {
+  // Adapted from: https://dyn4j.org/2011/11/contact-points-using-clipping/
+  
+  // Find relevant edges
+  Edge e1 = FindRelevantEdge(A, true);
+  Vector2 e1_vect(e1.v1, e1.v2);
+  Edge e2 = FindRelevantEdge(B, false);
+  Vector2 e2_vect(e2.v1, e2.v2);
+
+  // Determine reference and incident edge
+  Edge ref_edge, inc_edge;
+  Vector2 ref_vect, inc_vect;
+  bool flip{false};
+
+  if (abs(e1_vect.dot(collision_normal)) <= abs(e2_vect.dot(collision_normal))) {
+    ref_edge = e1;
+    ref_vect = e1_vect;
+    inc_edge = e2;
+    inc_vect = e2_vect;
+  } else {
+    ref_edge = e2;
+    ref_vect = e2_vect;
+    inc_edge = e1;
+    inc_vect = e1_vect;
+
+    flip = true;
+  }
+
+  ref_vect.convert_to_unit();
+
+  // Clip 1
+  float o1 = ref_vect * ref_edge.v1;  
+  std::vector<Point> clipped_points = clip(inc_edge.v1, inc_edge.v2, ref_vect, o1);
+
+  if (clipped_points.size() == 0)
+    return clipped_points;
+
+  // Clip 2
+  float o2 = ref_vect * ref_edge.v2;
+  clipped_points = clip(clipped_points[0], clipped_points[1], (ref_vect * -1), o2 * -1);
+  
+  if (clipped_points.size() == 0)
+    return clipped_points;
+
+  // Clip 3
+  Vector2 ref_normal(abs(ref_vect[1]), abs(ref_vect[0])); // = ref_vect.cross(-1);
+
+  if (flip)
+    ref_normal = ref_normal * -1;
+
+  Vector2 ref_edge_max(ref_edge.max);
+
+  float max = ref_normal.dot(ref_edge_max);
+
+  Vector2 pt_0(clipped_points[0]);
+  Vector2 pt_1(clipped_points[1]);
+
+  // if (ref_normal.dot(pt_0) - max < 0)
+  //   clipped_points.erase(clipped_points.begin());
+  // if (ref_normal.dot(pt_1) - max < 0)
+  //   clipped_points.erase(clipped_points.begin()+1);
+
+  return clipped_points;
+}
+
+std::vector<Point> CollisionProcessor::clip(Point v1, Point v2, Vector2 normal, float o) {
+  std::vector<Point> clipped_points;
+
+  float dist1 = normal * v1 - o;
+  float dist2 = normal * v2 - o;
+
+  if (dist1 < 0 & dist2 < 0) {
+    std::cout << dist1 << ", " << dist2 << "\n";
+  }
+
+  if (dist1 >= 0)
+    clipped_points.push_back(v1);
+  if (dist2 >= 0)
+    clipped_points.push_back(v2);
+
+  if (dist1 * dist2 < 0) {
+    Vector2 e = v2 - v1;
+
+    float u = dist1 / (dist1 - dist2);
+    e = e * u;
+    e = e + v1;
+
+    Point pt;
+    pt.x = e[0];
+    pt.y = e[1];
+
+    clipped_points.push_back(pt);
+  }
+  return clipped_points;
+}
+
 void CollisionProcessor::evaluate_collisions(std::vector<Entity*> entities) {
+
+  for (int i = 0; i < entities.size(); i++) {
+    entities[i]->calculate_vertices();
+    entities[i]->calculate_vertices_in_WCS();
+  }
+
   std::vector<std::pair<Entity*, Entity*>> pairs = brute_force(entities);
 
   // For each pair
@@ -773,44 +980,16 @@ void CollisionProcessor::evaluate_collisions(std::vector<Entity*> entities) {
       pairs[idx].second->collision = true;
 
       EPA(pairs[idx].first, pairs[idx].second);
+      std::vector<Point> manifold = FindCollisionManifold(pairs[idx].first, pairs[idx].second);
+      _manifold = manifold;
+
+      if (debug) {
+        std::cout << "New Manifold\n";
+        for (auto pt : manifold) {
+          std::cout << pt.x << ", " << pt.y << "\n";
+        }
+      }
     }
   }
-}
-
-void CollisionProcessor::reset_collisions(std::vector<Entity*> entities) {
-  for (int idx = 0; idx < entities.size(); idx++) {
-    entities[idx]->collision = false;
-  }
-}
-
-// Edge CollisionProcessor::FindRelevantEdge(Entity* entity) {
-//   // Find farthest vertex along separation normal
-//   float highest_dot = -std::numeric_limits<float>::max();
-//   int vertex_idx{0};
-
-//   for (int idx = 0; idx < entity->vertices_WCS.size(); idx++) {
-//     Vector2 vertex(entity->vertices_WCS[idx]);
-//     float projection = collision_normal.dot(vertex);
-
-//     if (projection > highest_dot) {
-//       highest_dot = projection;
-//       vertex_idx = idx;
-//     }
-//   }
-
-//   // Find the edge containing that vertex that is most perpendicular to collision normal
-//   Vector2 vertex_vect(entity->vertices_WCS[vertex_idx]);
-//   int prev_idx;
-//   int next_idx;
-
-//   // If vertex_idx
-// }
-
-void CollisionProcessor::FindCollisionManifold() {
-  // Find relevant edges
-  // Determine reference and incident edge
-  // Clip 1
-  // Clip 2
-  // Clip 3
 }
 #endif

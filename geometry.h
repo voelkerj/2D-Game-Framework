@@ -44,6 +44,7 @@ class Vector2 {
   Vector2();
   Vector2(float a, float b);
   Vector2(Point p);  // Convert a point to a vector
+  Vector2(Point a, Point b); // Vector from a to b
   ~Vector2(){};
 
   float operator[](int idx);
@@ -51,12 +52,14 @@ class Vector2 {
   Vector2 operator-(Vector2 other);
   Vector2 operator*(int number);
   Vector2 operator*(float number);
+  float operator*(Point pt);
   Vector2 operator=(Point p);
 
   float norm();
   void convert_to_unit();
   float dot(Vector2 other);
   float cross(Vector2 other);
+  Vector2 cross(float number);
 
   void print();
 };
@@ -74,6 +77,11 @@ Vector2::Vector2(float a, float b) {
 Vector2::Vector2(Point p) {
   value[0] = p.x;
   value[1] = p.y;
+}
+
+Vector2::Vector2(Point a, Point b) {
+  value[0] = b.x - a.x;
+  value[1] = b.y - a.y;
 }
 
 float Vector2::operator[](int idx) {
@@ -100,6 +108,10 @@ Vector2 Vector2::operator*(float number) {
   return result;
 }
 
+float Vector2::operator*(Point pt) {
+  return value[0] * pt.x + value[1] * pt.y;
+}
+
 Vector2 Vector2::operator=(Point p) {
   Vector2 result(p);
   return result;
@@ -123,14 +135,22 @@ float Vector2::cross(Vector2 other) {
   return value[0] * other[1] - value[1] * other[0];
 }
 
+Vector2 Vector2::cross(float number) {
+  Vector2 result(-value[1] * number, value[0] * number);
+  return result;
+}
+
 void Vector2::print() {
   std::cout << value[0] << ", " << value[1] << "\n";
 }
 
 struct Edge {
+  Point v1;        // Vertex 1
+  Point v2;        // Vertex 2
   float distance;  // Shortest distance from edge to origin
   float index;     // Index of edge in simplex
   Vector2 normal;  // Vector normal to edge
+  Point max;       // Farthest projection along a vector
 };
 
 #endif

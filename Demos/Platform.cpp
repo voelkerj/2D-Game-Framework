@@ -27,10 +27,27 @@ int main(int argc, char** argv) {
   block1.animations["idle"] = block_idle;
   block1.current_animation = "idle";
 
-  block1.state.pos_x = 20;
-  block1.state.pos_y = 10;
-  block1.size_x = 8;
-  block1.size_y = 2;
+  // block1.vertices_WCS.push_back()
+
+  // Example 1
+  // block1.state.pos_x = 11;
+  // block1.state.pos_y = 6.5;
+  // block1.size_x = 6;
+  // block1.size_y = 5;
+
+  // Example 2
+  // block1.state.pos_x = 5.5;
+  // block1.state.pos_y = 7.5;
+  // block1.size_x = sqrt(18);
+  // block1.size_y = sqrt(32);
+  // block1.state.angle = 45;
+
+  // Example 3
+  block1.state.pos_x = 11.5;
+  block1.state.pos_y = 5.5;
+  block1.size_x = sqrt(17);
+  block1.size_y = sqrt(17);
+  block1.state.angle = -22.3082224007915 - 3;
 
   Entity block2;
   block2.shape = box;
@@ -39,43 +56,18 @@ int main(int argc, char** argv) {
   block2.animations["idle"] = block_idle;
   block2.current_animation = "idle";
 
-  block2.state.pos_x = 0;
-  block2.state.pos_y = 0;
-  block2.size_x = 2;
-  block2.size_y = 2;
-
-  Entity block3;
-  block3.shape = box;
-  block3.load_sprite_sheet(base_path + "..\\resources\\block.png",
-                           graphics.renderer);
-  block3.animations["idle"] = block_idle;
-  block3.current_animation = "idle";
-
-  block3.state.pos_x = 10;
-  block3.state.pos_y = 6;
-  block3.size_x = 10;
-  block3.size_y = 2;
-  block3.state.angle = 0;
-
-  Entity block4;
-  block4.shape = box;
-  block4.load_sprite_sheet(base_path + "..\\resources\\block.png",
-                           graphics.renderer);
-  block4.animations["idle"] = block_idle;
-  block4.current_animation = "idle";
-
-  block4.state.pos_x = 30;
-  block4.state.pos_y = 0;
-  block4.size_x = 4;
-  block4.size_y = 2;
+  block2.state.pos_x = 8;
+  block2.state.pos_y = 3.5;
+  block2.size_x = 8;
+  block2.size_y = 3;
 
   Entity ball;
   ball.shape = circle;
   ball.load_sprite_sheet(base_path + "..\\resources\\ball.png",
                          graphics.renderer);
                          
-  ball.state.pos_x = 0;
-  ball.state.pos_y = 6;
+  ball.state.pos_x = 8.4;
+  ball.state.pos_y = 5.6;
   ball.size_x = 2;
   ball.size_y = 2;
 
@@ -106,15 +98,11 @@ int main(int argc, char** argv) {
   ball.name = "ball";
   block1.name = "block1";
   block2.name = "block2";
-  block3.name = "block3";
-  block4.name = "block4";
 
   std::vector<Entity*> entities;
   entities.push_back(&ball);
-  // entities.push_back(&block1);
+  entities.push_back(&block1);
   // entities.push_back(&block2);
-  entities.push_back(&block3);
-  // entities.push_back(&block4);
 
   // Frame Loop
   Uint32 previous_ticks{0};
@@ -175,9 +163,9 @@ int main(int argc, char** argv) {
       }
 
       if (inputs.is_held(SDL_SCANCODE_PAGEUP))
-        block3.state.angle += 3;
+        block1.state.angle += 3;
       if (inputs.is_held(SDL_SCANCODE_PAGEDOWN))
-        block3.state.angle -= 3;
+        block1.state.angle -= 3;
 
       if (inputs.was_pressed(SDL_SCANCODE_F1)) {
         if (collisions.debug)
@@ -192,27 +180,14 @@ int main(int argc, char** argv) {
       }
 
       if (inputs.was_pressed(SDL_SCANCODE_SPACE)) {
-        if (ball.current_animation == "idle")
-          ball.current_animation = "roll";
-        else
-          ball.current_animation = "idle";
+        std::cout << "Ball Position: " << ball.state.pos_x << ", " << ball.state.pos_y << "\n";
+        std::cout << "Block Angle: " << block1.state.angle << " deg\n";
+      //   if (ball.current_animation == "idle")
+      //     ball.current_animation = "roll";
+      //   else
+      //     ball.current_animation = "idle";
       }
     }
-
-    // ball.state.pos_x += 0.1;
-
-    // graphics.add_to_queue(block1);
-    // graphics.add_to_queue(block2);
-    graphics.add_to_queue(block3);
-    // graphics.add_to_queue(block4);
-    
-    graphics.add_to_queue(ball);
-
-    // ball.update_state(ball_forces, ball_moments, SDL_GetTicks() - previous_ticks);
-
-    collisions.evaluate_collisions(entities);
-
-    graphics.draw_queue(SDL_GetTicks());
 
     if (graphics.debug) {
       // Draw origin
@@ -222,17 +197,30 @@ int main(int argc, char** argv) {
       Point up(0, .5);
       Point down(0, -.5);
 
-      graphics.draw_line(origin, right);
-      graphics.draw_line(origin, left);
-      graphics.draw_line(origin, up);
-      graphics.draw_line(origin, down);
+      graphics.add_to_queue(origin, right);
+      graphics.add_to_queue(origin, left);
+      graphics.add_to_queue(origin, up);
+      graphics.add_to_queue(origin, down);
     }
 
     if (collisions.debug) {
-      Point a(0,0);
-      Point b(collisions.collision_normal[0], collisions.collision_normal[1]);
-      graphics.draw_line(a, b);
+      collisions.evaluate_collisions(entities);
+      if (collisions._manifold.size() > 0) {
+        for (auto pt : collisions._manifold) {
+          graphics.add_to_queue(pt);
+
+          Point b(collisions.collision_normal[0] + pt.x,
+                  collisions.collision_normal[1] + pt.y);
+          graphics.add_to_queue(pt, b);
+        }
+      }
     }
+
+    graphics.add_to_queue(block1);
+    // graphics.add_to_queue(block2);
+    graphics.add_to_queue(ball);
+    
+    graphics.draw_queue(SDL_GetTicks());
 
     previous_ticks = SDL_GetTicks();
     frameManager.end_frame();
