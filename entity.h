@@ -24,9 +24,6 @@ class Entity {
   Shape shape;
   std::vector<Point> vertices;
   std::vector<Point> vertices_WCS;
-  bool collision{false};
-  // Vector2 collision_vector;
-  // float collision_depth;
   std::string name;
 
   Entity(){};
