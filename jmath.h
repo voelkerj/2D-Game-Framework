@@ -46,6 +46,37 @@ Vector2 triple_product(Vector2& a, Vector2& b, Vector2& c) {
 
   return result;
 }
+
+std::vector<Point> clip(Point v1, Point v2, Vector2 normal, float o) {
+  std::vector<Point> clipped;
+
+  float dist1 = normal * v1 - o;
+  float dist2 = normal * v2 - o;
+
+  if (dist1 < 0 & dist2 < 0) {
+    std::cout << dist1 << ", " << dist2 << "\n";
+  }
+
+  if (dist1 >= 0)
+    clipped.push_back(v1);
+  if (dist2 >= 0)
+    clipped.push_back(v2);
+
+  if (dist1 * dist2 < 0) {
+    Vector2 e = v2 - v1;
+
+    float u = dist1 / (dist1 - dist2);
+    e = e * u;
+    e = e + v1;
+
+    Point pt;
+    pt.x = e[0];
+    pt.y = e[1];
+
+    clipped.push_back(pt);
+  }
+  return clipped;
+}
 }  // namespace jmath
 
 #endif

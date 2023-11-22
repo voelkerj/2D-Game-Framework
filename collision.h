@@ -1,35 +1,64 @@
 #ifndef COLLISION_H
 #define COLLISION_H
 
-#include "geometry.h"
 #include "entity.h"
+#include "geometry.h"
 #include "jmath.h"
 
 #include <vector>
+#include <memory>
 
 class Collision {
  public:
   Entity* A_;
   Entity* B_;
 
-  Point simplex_[3]; // The last simplex for the collision between these two entities
-  std::vector<float> depth_; // Depth of the collision for each point in the manifold
-  Vector2 normal_; // Collision normal
-  std::vector<Point> manifold_;
+  bool debug_{false};
 
-  Collision(Entity* a, Entity* b, Vector2 simplex[3]);
+  Point simplex_[3]; // The last simplex for the collision between these two entities
+  std::vector<float>depth_; // Depth of the collision for each point in the manifold
+  Vector2 normal_;  // Collision normal
+  std::vector<Point> manifold_;
+  bool resolved_;
+  std::vector<std::pair<Point, Point>> lines_to_draw_;
+
+  Collision(Entity* a, Entity* b, Vector2 simplex[3], bool debug_);
+  Collision() {std::cout << "Creating collision via default constructor: " << this << "\n";};
+  ~Collision();
+
+  // Delete copy and copy assignment
+  Collision(const Collision&) = delete;
+  Collision& operator=(const Collision&) = delete;
 
   void EPA();
   Edge FindClosestEdge(std::vector<Point>& polygon);
-
   void FindCollisionManifold();
   Edge FindRelevantEdge(Entity* entity, bool positive_direction);
-  std::vector<Point> clip(Point v1, Point v2, Vector2 normal, float o);
+  void update(Vector2 simplex[3]);
 };
 
-Collision::Collision(Entity* a, Entity* b, Vector2 simplex[3]) {
+Collision::~Collision() {
+  std::cout << this << ": Collision destructor called...\n";
+}
+
+Collision::Collision(Entity* a, Entity* b, Vector2 simplex[3], bool debug) {
+  std::cout << "Creating collision: " << this << "\n";
   A_ = a;
   B_ = b;
+
+  debug = debug_;
+
+  resolved_ = false;
+
+  update(simplex);
+}
+
+void Collision::update(Vector2 simplex[3]) {
+  // Reset values
+  depth_.clear();
+  normal_.reset();
+  manifold_.clear();
+  lines_to_draw_.clear();
 
   // Convert simplex to vector of Points (aka a polygon)
   Point pt;
@@ -44,11 +73,12 @@ Collision::Collision(Entity* a, Entity* b, Vector2 simplex[3]) {
   // Resolve Collision
   EPA();
   FindCollisionManifold();
+  // resolved_ = true;
 }
 
 void Collision::EPA() {
   // Adapted from: https://dyn4j.org/2010/05/epa-expanding-polytope-algorithm/
-  
+
   // Create polygon and populate it with simplex initially
   std::vector<Point> polygon;
   polygon.push_back(simplex_[0]);
@@ -131,11 +161,11 @@ Edge Collision::FindClosestEdge(std::vector<Point>& polygon) {
 
 void Collision::FindCollisionManifold() {
   // Adapted from: https://dyn4j.org/2011/11/contact-points-using-clipping/
-  
+
   // Find relevant edges
-  Edge e1 = FindRelevantEdge(A, true);
+  Edge e1 = FindRelevantEdge(A_, true);
   Vector2 e1_vect(e1.v1, e1.v2);
-  Edge e2 = FindRelevantEdge(B, false);
+  Edge e2 = FindRelevantEdge(B_, false);
   Vector2 e2_vect(e2.v1, e2.v2);
 
   // Determine reference and incident edge
@@ -160,24 +190,28 @@ void Collision::FindCollisionManifold() {
   ref_vect.convert_to_unit();
 
   // Clip 1
-  float o1 = ref_vect * ref_edge.v1;  
-  std::vector<Point> manifold_ = clip(inc_edge.v1, inc_edge.v2, ref_vect, o1);
+  float o1 = ref_vect * ref_edge.v1;
+  manifold_ = jmath::clip(inc_edge.v1, inc_edge.v2, ref_vect, o1);
 
-  if (manifold_.size() == 0)
+  if (manifold_.size() < 2)
     return;
 
   // Clip 2
   float o2 = ref_vect * ref_edge.v2;
-  manifold_ = clip(manifold_[0], manifold_[1], (ref_vect * -1), o2 * -1);
-  
-  if (manifold_.size() == 0)
+  // ref_vect = ref_vect * -1;
+  manifold_ = jmath::clip(manifold_[0], manifold_[1], (ref_vect * -1), o2 * -1);
+  // manifold_ = jmath::clip(manifold_[0], manifold_[1], ref_vect, o2 * -1);
+
+  if (manifold_.size() < 2)
     return;
 
   // Clip 3
-  Vector2 ref_normal(abs(ref_vect[1]), abs(ref_vect[0])); // = ref_vect.cross(-1);
+  // Vector2 ref_normal(abs(ref_vect[1]), abs(ref_vect[0]));
+  Vector2 ref_normal = ref_vect.cross(1);
 
-  if (flip)
-    ref_normal = ref_normal * -1;
+  // if (flip) {
+  //   ref_normal = ref_normal * -1;
+  // }
 
   Vector2 ref_edge_max(ref_edge.max);
 
@@ -186,10 +220,25 @@ void Collision::FindCollisionManifold() {
   Vector2 pt_0(manifold_[0]);
   Vector2 pt_1(manifold_[1]);
 
-  // if (ref_normal.dot(pt_0) - max < 0)
-  //   manifold_.erase(manifold_.begin());
-  // if (ref_normal.dot(pt_1) - max < 0)
-  //   manifold_.erase(manifold_.begin()+1);
+  if (ref_normal.dot(pt_0) - max < 0.0)
+    manifold_.erase(manifold_.begin());
+  if (ref_normal.dot(pt_1) - max < 0.0)
+    manifold_.erase(manifold_.begin()+1);
+
+  // Setup draw lines if in debug mode
+  if (debug_) {
+    lines_to_draw_.push_back(std::make_pair(ref_edge.v1, ref_edge.v2));
+    lines_to_draw_.push_back(std::make_pair(inc_edge.v1, inc_edge.v2));
+
+    // Determine midpoint of ref_edge
+    Point midpoint;
+    midpoint.x = ((ref_edge.v2.x - ref_edge.v1.x) / 2) + ref_edge.v1.x;
+    midpoint.y = ((ref_edge.v2.y - ref_edge.v1.y) / 2) + ref_edge.v1.y;
+
+    // Offset the ref_normal to be drawn starting at ref_edge midpoint
+    Point normal_end(midpoint.x + ref_normal.value[0], midpoint.y + ref_normal.value[1]);
+    lines_to_draw_.push_back(std::make_pair(midpoint, normal_end));
+  }
 }
 
 Edge Collision::FindRelevantEdge(Entity* entity, bool positive_direction) {
@@ -241,7 +290,9 @@ Edge Collision::FindRelevantEdge(Entity* entity, bool positive_direction) {
   // Find the edge containing that vertex that is most perpendicular to collision normal
   // Most perpendicular edge will have a dot product closer to zero
   Point pt1, pt2;
-  if (right.dot(normal) < left.dot(normal)) { // Maybe this needs to be abs() of each dot product...TBD!
+  if (right.dot(normal) <
+      left.dot(
+          normal)) {  // Maybe this needs to be abs() of each dot product...TBD!
     pt1 = entity->vertices_WCS[prev_idx];
     pt2 = entity->vertices_WCS[vertex_idx];
   } else {
@@ -256,53 +307,25 @@ Edge Collision::FindRelevantEdge(Entity* entity, bool positive_direction) {
   return edge;
 }
 
-std::vector<Point> Collision::clip(Point v1, Point v2, Vector2 normal, float o) {
-  std::vector<Point> manifold_;
-
-  float dist1 = normal * v1 - o;
-  float dist2 = normal * v2 - o;
-
-  if (dist1 < 0 & dist2 < 0) {
-    std::cout << dist1 << ", " << dist2 << "\n";
-  }
-
-  if (dist1 >= 0)
-    manifold_.push_back(v1);
-  if (dist2 >= 0)
-    manifold_.push_back(v2);
-
-  if (dist1 * dist2 < 0) {
-    Vector2 e = v2 - v1;
-
-    float u = dist1 / (dist1 - dist2);
-    e = e * u;
-    e = e + v1;
-
-    Point pt;
-    pt.x = e[0];
-    pt.y = e[1];
-
-    manifold_.push_back(pt);
-  }
-  return manifold_;
-}
-
 class CollisionProcessor {
  public:
-  std::vector<Collision> active_collisions_;
+  std::vector<std::unique_ptr<Collision>> active_collisions_;
   Vector2 simplex_[3];
   bool debug{false};
 
   void evaluate_collisions(std::vector<Entity*> entities);
+  void find_or_create_collision(Entity* A, Entity* B);
+  void prune_resolved_collisions();
 
   // Broadphase
-  std::vector<std::pair<Entity*, Entity*>> brute_force(std::vector<Entity*> entities);
+  std::vector<std::pair<Entity*, Entity*>> brute_force(
+      std::vector<Entity*> entities);
   bool AABB_overlap(Entity* A, Entity* B);
 
   // Narrowphase
   bool GJK(Entity* A, Entity* B);
 
-  void reset_collisions(std::vector<Entity*> entities);
+  // void reset_collisions(std::vector<Entity*> entities);
 };
 
 void CollisionProcessor::evaluate_collisions(std::vector<Entity*> entities) {
@@ -317,8 +340,47 @@ void CollisionProcessor::evaluate_collisions(std::vector<Entity*> entities) {
   // For each pair
   for (int idx = 0; idx < pairs.size(); idx++) {
     if (GJK(pairs[idx].first, pairs[idx].second)) {
+      find_or_create_collision(pairs[idx].first, pairs[idx].second);
+    }
+  }
+}
 
-      Collision collision(pairs[idx].first, pairs[idx].second, simplex_);
+void CollisionProcessor::find_or_create_collision(Entity* A, Entity* B) {
+  // if the active collisions vector is not empty
+  if (!active_collisions_.empty()) {
+
+    // Loop through each existing collision
+    for (auto&& collision : active_collisions_) {
+
+      // if the two entites are not already involved in a collision
+      if (!((A == collision->A_ || A == collision->B_) &&
+            (B == collision->A_ || B == collision->B_))) {
+              
+        // Collision collision(A, B, simplex_, debug);
+        std::unique_ptr<Collision> new_collision = std::make_unique<Collision>(A, B, simplex_, debug);
+
+        active_collisions_.push_back(std::move(new_collision));
+
+      } else { // We have already noted this collision, just update it with a new simplex
+        collision->update(simplex_);
+        collision->debug_ = debug; // Update debug state
+      }
+    }
+  } else {  // active collisions vector is empty, create a new collision by default
+    // Collision collision(A, B, simplex_, debug);
+    std::unique_ptr<Collision> new_collision = std::make_unique<Collision>(A, B, simplex_, debug);
+
+    active_collisions_.push_back(std::move(new_collision));
+  }
+}
+
+void CollisionProcessor::prune_resolved_collisions() {
+  int idx = 0;
+
+  for (auto&& collision : active_collisions_) {
+    if (collision->resolved_) {
+      active_collisions_.erase(active_collisions_.begin() + idx);
+      idx++;
     }
   }
 }
@@ -414,12 +476,4 @@ bool CollisionProcessor::GJK(Entity* A, Entity* B) {
   }
   return false;
 }
-
-void CollisionProcessor::reset_collisions(std::vector<Entity*> entities) {
-  _manifold.clear();
-  for (int idx = 0; idx < entities.size(); idx++) {
-    entities[idx]->collision = false;
-  }
-}
-
 #endif

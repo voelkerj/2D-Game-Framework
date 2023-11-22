@@ -228,24 +228,6 @@ CMakeFiles/Platform_Demo.dir/Platform.cpp.obj: C:/Users/johnw/Code/2D-Game-Frame
   C:/msys64/mingw64/include/c++/12.2.0/bits/range_access.h \
   C:/msys64/mingw64/include/c++/12.2.0/bits/vector.tcc \
   C:/Users/johnw/Code/2D-Game-Framework/collision.h \
-  C:/Users/johnw/Code/2D-Game-Framework/geometry.h \
-  C:/msys64/mingw64/include/c++/12.2.0/math.h \
-  C:/msys64/mingw64/include/c++/12.2.0/cmath \
-  C:/msys64/mingw64/include/math.h \
-  C:/msys64/mingw64/include/c++/12.2.0/bits/specfun.h \
-  C:/msys64/mingw64/include/c++/12.2.0/limits \
-  C:/msys64/mingw64/include/c++/12.2.0/tr1/gamma.tcc \
-  C:/msys64/mingw64/include/c++/12.2.0/tr1/special_function_util.h \
-  C:/msys64/mingw64/include/c++/12.2.0/tr1/bessel_function.tcc \
-  C:/msys64/mingw64/include/c++/12.2.0/tr1/beta_function.tcc \
-  C:/msys64/mingw64/include/c++/12.2.0/tr1/ell_integral.tcc \
-  C:/msys64/mingw64/include/c++/12.2.0/tr1/exp_integral.tcc \
-  C:/msys64/mingw64/include/c++/12.2.0/tr1/hypergeometric.tcc \
-  C:/msys64/mingw64/include/c++/12.2.0/tr1/legendre_function.tcc \
-  C:/msys64/mingw64/include/c++/12.2.0/tr1/modified_bessel_func.tcc \
-  C:/msys64/mingw64/include/c++/12.2.0/tr1/poly_hermite.tcc \
-  C:/msys64/mingw64/include/c++/12.2.0/tr1/poly_laguerre.tcc \
-  C:/msys64/mingw64/include/c++/12.2.0/tr1/riemann_zeta.tcc \
   C:/Users/johnw/Code/2D-Game-Framework/entity.h \
   C:/Users/johnw/Code/2D-Game-Framework/physics.h \
   C:/msys64/mingw64/include/c++/12.2.0/string \
@@ -278,15 +260,24 @@ CMakeFiles/Platform_Demo.dir/Platform.cpp.obj: C:/Users/johnw/Code/2D-Game-Frame
   C:/msys64/mingw64/include/c++/12.2.0/cerrno \
   C:/msys64/mingw64/include/c++/12.2.0/bits/charconv.h \
   C:/msys64/mingw64/include/c++/12.2.0/bits/basic_string.tcc \
-  C:/msys64/mingw64/include/c++/12.2.0/map \
-  C:/msys64/mingw64/include/c++/12.2.0/bits/stl_tree.h \
-  C:/msys64/mingw64/include/c++/12.2.0/ext/aligned_buffer.h \
-  C:/msys64/mingw64/include/c++/12.2.0/bits/node_handle.h \
-  C:/msys64/mingw64/include/c++/12.2.0/bits/stl_map.h \
-  C:/msys64/mingw64/include/c++/12.2.0/tuple \
-  C:/msys64/mingw64/include/c++/12.2.0/bits/uses_allocator.h \
-  C:/msys64/mingw64/include/c++/12.2.0/bits/stl_multimap.h \
-  C:/msys64/mingw64/include/c++/12.2.0/bits/erase_if.h \
+  C:/msys64/mingw64/include/c++/12.2.0/math.h \
+  C:/msys64/mingw64/include/c++/12.2.0/cmath \
+  C:/msys64/mingw64/include/math.h \
+  C:/msys64/mingw64/include/c++/12.2.0/bits/specfun.h \
+  C:/msys64/mingw64/include/c++/12.2.0/limits \
+  C:/msys64/mingw64/include/c++/12.2.0/tr1/gamma.tcc \
+  C:/msys64/mingw64/include/c++/12.2.0/tr1/special_function_util.h \
+  C:/msys64/mingw64/include/c++/12.2.0/tr1/bessel_function.tcc \
+  C:/msys64/mingw64/include/c++/12.2.0/tr1/beta_function.tcc \
+  C:/msys64/mingw64/include/c++/12.2.0/tr1/ell_integral.tcc \
+  C:/msys64/mingw64/include/c++/12.2.0/tr1/exp_integral.tcc \
+  C:/msys64/mingw64/include/c++/12.2.0/tr1/hypergeometric.tcc \
+  C:/msys64/mingw64/include/c++/12.2.0/tr1/legendre_function.tcc \
+  C:/msys64/mingw64/include/c++/12.2.0/tr1/modified_bessel_func.tcc \
+  C:/msys64/mingw64/include/c++/12.2.0/tr1/poly_hermite.tcc \
+  C:/msys64/mingw64/include/c++/12.2.0/tr1/poly_laguerre.tcc \
+  C:/msys64/mingw64/include/c++/12.2.0/tr1/riemann_zeta.tcc \
+  C:/Users/johnw/Code/2D-Game-Framework/geometry.h \
   C:/msys64/mingw64/include/c++/12.2.0/iostream \
   C:/msys64/mingw64/include/c++/12.2.0/ostream \
   C:/msys64/mingw64/include/c++/12.2.0/ios \
@@ -329,6 +320,32 @@ CMakeFiles/Platform_Demo.dir/Platform.cpp.obj: C:/Users/johnw/Code/2D-Game-Frame
   C:/msys64/mingw64/include/c++/12.2.0/bits/ostream.tcc \
   C:/msys64/mingw64/include/c++/12.2.0/istream \
   C:/msys64/mingw64/include/c++/12.2.0/bits/istream.tcc \
+  C:/msys64/mingw64/include/c++/12.2.0/map \
+  C:/msys64/mingw64/include/c++/12.2.0/bits/stl_tree.h \
+  C:/msys64/mingw64/include/c++/12.2.0/ext/aligned_buffer.h \
+  C:/msys64/mingw64/include/c++/12.2.0/bits/node_handle.h \
+  C:/msys64/mingw64/include/c++/12.2.0/bits/stl_map.h \
+  C:/msys64/mingw64/include/c++/12.2.0/tuple \
+  C:/msys64/mingw64/include/c++/12.2.0/bits/uses_allocator.h \
+  C:/msys64/mingw64/include/c++/12.2.0/bits/stl_multimap.h \
+  C:/msys64/mingw64/include/c++/12.2.0/bits/erase_if.h \
+  C:/Users/johnw/Code/2D-Game-Framework/jmath.h \
+  C:/msys64/mingw64/include/c++/12.2.0/memory \
+  C:/msys64/mingw64/include/c++/12.2.0/bits/stl_tempbuf.h \
+  C:/msys64/mingw64/include/c++/12.2.0/bits/stl_raw_storage_iter.h \
+  C:/msys64/mingw64/include/c++/12.2.0/bits/align.h \
+  C:/msys64/mingw64/include/c++/12.2.0/bit \
+  C:/msys64/mingw64/include/c++/12.2.0/bits/unique_ptr.h \
+  C:/msys64/mingw64/include/c++/12.2.0/bits/shared_ptr.h \
+  C:/msys64/mingw64/include/c++/12.2.0/bits/shared_ptr_base.h \
+  C:/msys64/mingw64/include/c++/12.2.0/bits/allocated_ptr.h \
+  C:/msys64/mingw64/include/c++/12.2.0/ext/concurrence.h \
+  C:/msys64/mingw64/include/c++/12.2.0/bits/shared_ptr_atomic.h \
+  C:/msys64/mingw64/include/c++/12.2.0/bits/atomic_base.h \
+  C:/msys64/mingw64/include/c++/12.2.0/bits/atomic_lockfree_defines.h \
+  C:/msys64/mingw64/include/c++/12.2.0/backward/auto_ptr.h \
+  C:/msys64/mingw64/include/c++/12.2.0/pstl/glue_memory_defs.h \
+  C:/msys64/mingw64/include/c++/12.2.0/pstl/execution_defs.h \
   C:/Users/johnw/Code/2D-Game-Framework/frame_manager.h \
   C:/Users/johnw/Code/2D-Game-Framework/graphics.h \
   C:/Users/johnw/Code/2D-Game-Framework/inputs.h
@@ -375,6 +392,8 @@ C:/msys64/mingw64/include/c++/12.2.0/x86_64-w64-mingw32/bits/c++config.h:
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/avx512bf16intrin.h:
 
 C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_stdinc.h:
+
+C:/msys64/mingw64/include/c++/12.2.0/bits/shared_ptr.h:
 
 C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/close_code.h:
 
@@ -546,6 +565,8 @@ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/avx512fintrin.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/fxsrintrin.h:
 
+C:/msys64/mingw64/include/c++/12.2.0/pstl/execution_defs.h:
+
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/lzcntintrin.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/lwpintrin.h:
@@ -593,6 +614,8 @@ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/xsaveintrin.h:
 C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_events.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/xsaveoptintrin.h:
+
+C:/Users/johnw/Code/2D-Game-Framework/jmath.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/xsavesintrin.h:
 
@@ -671,6 +694,8 @@ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/avx5124fmapsintrin.h
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/avx5124vnniwintrin.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/avx512vnniintrin.h:
+
+C:/msys64/mingw64/include/c++/12.2.0/pstl/glue_memory_defs.h:
 
 C:/msys64/mingw64/include/c++/12.2.0/cctype:
 
@@ -842,45 +867,13 @@ C:/msys64/mingw64/include/c++/12.2.0/initializer_list:
 
 C:/msys64/mingw64/include/c++/12.2.0/bits/stl_bvector.h:
 
+C:/msys64/mingw64/include/c++/12.2.0/bit:
+
 C:/msys64/mingw64/include/c++/12.2.0/bits/hash_bytes.h:
 
 C:/msys64/mingw64/include/c++/12.2.0/backward/binders.h:
 
 C:/msys64/mingw64/include/c++/12.2.0/bits/vector.tcc:
-
-C:/Users/johnw/Code/2D-Game-Framework/geometry.h:
-
-C:/msys64/mingw64/include/c++/12.2.0/math.h:
-
-C:/msys64/mingw64/include/c++/12.2.0/cmath:
-
-C:/msys64/mingw64/include/c++/12.2.0/bits/specfun.h:
-
-C:/msys64/mingw64/include/c++/12.2.0/limits:
-
-C:/msys64/mingw64/include/c++/12.2.0/string_view:
-
-C:/msys64/mingw64/include/c++/12.2.0/tr1/gamma.tcc:
-
-C:/msys64/mingw64/include/c++/12.2.0/tr1/special_function_util.h:
-
-C:/msys64/mingw64/include/c++/12.2.0/tr1/bessel_function.tcc:
-
-C:/msys64/mingw64/include/c++/12.2.0/tr1/beta_function.tcc:
-
-C:/msys64/mingw64/include/c++/12.2.0/tr1/ell_integral.tcc:
-
-C:/msys64/mingw64/include/c++/12.2.0/tr1/exp_integral.tcc:
-
-C:/msys64/mingw64/include/c++/12.2.0/tr1/hypergeometric.tcc:
-
-C:/msys64/mingw64/include/c++/12.2.0/tr1/legendre_function.tcc:
-
-C:/msys64/mingw64/include/c++/12.2.0/tr1/modified_bessel_func.tcc:
-
-C:/msys64/mingw64/include/c++/12.2.0/tr1/poly_hermite.tcc:
-
-C:/msys64/mingw64/include/c++/12.2.0/tr1/riemann_zeta.tcc:
 
 C:/Users/johnw/Code/2D-Game-Framework/entity.h:
 
@@ -914,6 +907,8 @@ C:/msys64/mingw64/include/locale.h:
 
 C:/msys64/mingw64/include/stdio.h:
 
+C:/msys64/mingw64/include/c++/12.2.0/bits/atomic_base.h:
+
 C:/msys64/mingw64/include/sec_api/stdio_s.h:
 
 C:/msys64/mingw64/include/c++/12.2.0/iosfwd:
@@ -923,6 +918,10 @@ C:/msys64/mingw64/include/ctype.h:
 C:/msys64/mingw64/include/c++/12.2.0/bits/ostream_insert.h:
 
 C:/msys64/mingw64/include/c++/12.2.0/bits/basic_string.h:
+
+C:/msys64/mingw64/include/c++/12.2.0/tr1/gamma.tcc:
+
+C:/msys64/mingw64/include/c++/12.2.0/string_view:
 
 C:/msys64/mingw64/include/c++/12.2.0/bits/string_view.tcc:
 
@@ -936,17 +935,39 @@ C:/msys64/mingw64/include/c++/12.2.0/bits/charconv.h:
 
 C:/msys64/mingw64/include/c++/12.2.0/bits/basic_string.tcc:
 
-C:/msys64/mingw64/include/c++/12.2.0/map:
+C:/msys64/mingw64/include/c++/12.2.0/math.h:
 
-C:/msys64/mingw64/include/c++/12.2.0/ext/aligned_buffer.h:
+C:/msys64/mingw64/include/c++/12.2.0/cmath:
 
-C:/msys64/mingw64/include/c++/12.2.0/bits/node_handle.h:
+C:/msys64/mingw64/include/c++/12.2.0/bits/specfun.h:
 
-C:/msys64/mingw64/include/c++/12.2.0/tuple:
+C:/msys64/mingw64/include/c++/12.2.0/limits:
 
-C:/msys64/mingw64/include/c++/12.2.0/bits/uses_allocator.h:
+C:/msys64/mingw64/include/c++/12.2.0/tr1/special_function_util.h:
 
-C:/msys64/mingw64/include/c++/12.2.0/bits/erase_if.h:
+C:/msys64/mingw64/include/c++/12.2.0/tr1/bessel_function.tcc:
+
+C:/msys64/mingw64/include/c++/12.2.0/tr1/beta_function.tcc:
+
+C:/msys64/mingw64/include/c++/12.2.0/tr1/ell_integral.tcc:
+
+C:/msys64/mingw64/include/c++/12.2.0/tr1/exp_integral.tcc:
+
+C:/msys64/mingw64/include/c++/12.2.0/bits/shared_ptr_atomic.h:
+
+C:/msys64/mingw64/include/c++/12.2.0/tr1/hypergeometric.tcc:
+
+C:/msys64/mingw64/include/c++/12.2.0/tr1/legendre_function.tcc:
+
+C:/msys64/mingw64/include/c++/12.2.0/tr1/modified_bessel_func.tcc:
+
+C:/msys64/mingw64/include/c++/12.2.0/ext/concurrence.h:
+
+C:/msys64/mingw64/include/c++/12.2.0/tr1/poly_hermite.tcc:
+
+C:/msys64/mingw64/include/c++/12.2.0/tr1/riemann_zeta.tcc:
+
+C:/Users/johnw/Code/2D-Game-Framework/geometry.h:
 
 C:/msys64/mingw64/include/c++/12.2.0/ostream:
 
@@ -989,3 +1010,33 @@ C:/msys64/mingw64/include/c++/12.2.0/cwctype:
 C:/msys64/mingw64/include/c++/12.2.0/bits/ostream.tcc:
 
 C:/msys64/mingw64/include/c++/12.2.0/istream:
+
+C:/msys64/mingw64/include/c++/12.2.0/map:
+
+C:/msys64/mingw64/include/c++/12.2.0/ext/aligned_buffer.h:
+
+C:/msys64/mingw64/include/c++/12.2.0/bits/node_handle.h:
+
+C:/msys64/mingw64/include/c++/12.2.0/tuple:
+
+C:/msys64/mingw64/include/c++/12.2.0/bits/uses_allocator.h:
+
+C:/msys64/mingw64/include/c++/12.2.0/bits/erase_if.h:
+
+C:/msys64/mingw64/include/c++/12.2.0/memory:
+
+C:/msys64/mingw64/include/c++/12.2.0/bits/stl_tempbuf.h:
+
+C:/msys64/mingw64/include/c++/12.2.0/bits/stl_raw_storage_iter.h:
+
+C:/msys64/mingw64/include/c++/12.2.0/bits/align.h:
+
+C:/msys64/mingw64/include/c++/12.2.0/bits/unique_ptr.h:
+
+C:/msys64/mingw64/include/c++/12.2.0/bits/shared_ptr_base.h:
+
+C:/msys64/mingw64/include/c++/12.2.0/bits/allocated_ptr.h:
+
+C:/msys64/mingw64/include/c++/12.2.0/bits/atomic_lockfree_defines.h:
+
+C:/msys64/mingw64/include/c++/12.2.0/backward/auto_ptr.h:

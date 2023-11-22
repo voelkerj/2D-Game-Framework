@@ -14,7 +14,7 @@ int main(int argc, char** argv) {
 
   SDL_Event event;
 
-  CollisionProcessor collisions;
+  CollisionProcessor collision_proc;
 
   // Entities
   Animation block_idle;
@@ -27,13 +27,10 @@ int main(int argc, char** argv) {
   block1.animations["idle"] = block_idle;
   block1.current_animation = "idle";
 
-  // block1.vertices_WCS.push_back()
-
-  // Example 1
-  // block1.state.pos_x = 11;
-  // block1.state.pos_y = 6.5;
-  // block1.size_x = 6;
-  // block1.size_y = 5;
+  block1.state.pos_x = 8;
+  block1.state.pos_y = 3.5;
+  block1.size_x = 8;
+  block1.size_y = 3;
 
   // Example 2
   // block1.state.pos_x = 5.5;
@@ -43,23 +40,11 @@ int main(int argc, char** argv) {
   // block1.state.angle = 45;
 
   // Example 3
-  block1.state.pos_x = 11.5;
-  block1.state.pos_y = 5.5;
-  block1.size_x = sqrt(17);
-  block1.size_y = sqrt(17);
-  block1.state.angle = -22.3082224007915 - 3;
-
-  Entity block2;
-  block2.shape = box;
-  block2.load_sprite_sheet(base_path + "..\\resources\\block.png",
-                           graphics.renderer);
-  block2.animations["idle"] = block_idle;
-  block2.current_animation = "idle";
-
-  block2.state.pos_x = 8;
-  block2.state.pos_y = 3.5;
-  block2.size_x = 8;
-  block2.size_y = 3;
+  // block1.state.pos_x = 11.5;
+  // block1.state.pos_y = 5.5;
+  // block1.size_x = sqrt(17);
+  // block1.size_y = sqrt(17);
+  // block1.state.angle = -22.3082224007915;
 
   Entity ball;
   ball.shape = circle;
@@ -95,14 +80,29 @@ int main(int argc, char** argv) {
 
   std::vector<Moment> ball_moments;
 
+  Entity movable_box;
+  movable_box.shape = box;
+  movable_box.load_sprite_sheet(base_path + "..\\resources\\block.png",
+                           graphics.renderer);
+  movable_box.animations["idle"] = block_idle;
+  movable_box.current_animation = "idle";
+
+  movable_box.state.pos_x = 0;
+  movable_box.state.pos_y = 0;
+  movable_box.size_x = sqrt(17);
+  movable_box.size_y = sqrt(17);
+
   ball.name = "ball";
   block1.name = "block1";
-  block2.name = "block2";
+  movable_box.name = "movable";
 
   std::vector<Entity*> entities;
-  entities.push_back(&ball);
+  // entities.push_back(&ball);
+  entities.push_back(&movable_box);
   entities.push_back(&block1);
   // entities.push_back(&block2);
+  
+  bool print_manifold = false;
 
   // Frame Loop
   Uint32 previous_ticks{0};
@@ -114,8 +114,6 @@ int main(int argc, char** argv) {
     
     ball_forces.clear();
     ball_moments.clear();
-
-    collisions.reset_collisions(entities);
 
     // Handle Keyboard and Close Button
     if (SDL_PollEvent(&event)) {
@@ -133,20 +131,16 @@ int main(int argc, char** argv) {
 
       // WASD Moves Camera
       if (inputs.is_held(SDL_SCANCODE_W)){
-        ball.state.pos_y += 0.1;
-        // block2.state.pos_y += 0.1;
+        movable_box.state.pos_y += 0.1;
       }
       if (inputs.is_held(SDL_SCANCODE_A)){
-        ball.state.pos_x -= 0.1;
-        // block2.state.pos_x -= 0.1;
+        movable_box.state.pos_x -= 0.1;
       }
       if (inputs.is_held(SDL_SCANCODE_S)){
-        ball.state.pos_y -= 0.1;
-        // block2.state.pos_y -= 0.1;
+        movable_box.state.pos_y -= 0.1;
       }
       if (inputs.is_held(SDL_SCANCODE_D)){
-        ball.state.pos_x += 0.1;
-        // block2.state.pos_x += 0.1;
+        movable_box.state.pos_x += 0.1;
       }
 
       if (inputs.is_held(SDL_SCANCODE_UP) || inputs.was_pressed(SDL_SCANCODE_UP)){
@@ -162,16 +156,27 @@ int main(int argc, char** argv) {
         graphics.current_camera.pos_x += 0.2;
       }
 
+      if (inputs.was_pressed(SDL_SCANCODE_F2)) {
+        movable_box.state.pos_x = 4;
+        movable_box.state.pos_y = 0;
+        movable_box.state.angle = -24;
+      }
+
       if (inputs.is_held(SDL_SCANCODE_PAGEUP))
-        block1.state.angle += 3;
+        movable_box.state.angle += 3;
       if (inputs.is_held(SDL_SCANCODE_PAGEDOWN))
+        movable_box.state.angle -= 3;
+
+      if (inputs.is_held(SDL_SCANCODE_Q))
+        block1.state.angle += 3;
+      if (inputs.is_held(SDL_SCANCODE_E))
         block1.state.angle -= 3;
 
       if (inputs.was_pressed(SDL_SCANCODE_F1)) {
-        if (collisions.debug)
-          collisions.debug = false;
+        if (collision_proc.debug) // Hardcoded to be true above
+          collision_proc.debug = false;
         else
-          collisions.debug = true;
+          collision_proc.debug = true;
 
         if (graphics.debug)
           graphics.debug = false;
@@ -180,8 +185,11 @@ int main(int argc, char** argv) {
       }
 
       if (inputs.was_pressed(SDL_SCANCODE_SPACE)) {
-        std::cout << "Ball Position: " << ball.state.pos_x << ", " << ball.state.pos_y << "\n";
-        std::cout << "Block Angle: " << block1.state.angle << " deg\n";
+        for (auto entity : entities) {
+          entity->print_state();
+          print_manifold = true;
+        }
+
       //   if (ball.current_animation == "idle")
       //     ball.current_animation = "roll";
       //   else
@@ -203,22 +211,49 @@ int main(int argc, char** argv) {
       graphics.add_to_queue(origin, down);
     }
 
-    if (collisions.debug) {
-      collisions.evaluate_collisions(entities);
-      if (collisions._manifold.size() > 0) {
-        for (auto pt : collisions._manifold) {
-          graphics.add_to_queue(pt);
+    if (collision_proc.debug) {
+      collision_proc.evaluate_collisions(entities);
+      for (auto&& collision : collision_proc.active_collisions_) 
+      {
+        if (collision->manifold_.size() > 0) {
+          
+          if (print_manifold)
+            std::cout << "Manifold Points: ";
 
-          Point b(collisions.collision_normal[0] + pt.x,
-                  collisions.collision_normal[1] + pt.y);
-          graphics.add_to_queue(pt, b);
+          for (auto pt : collision->manifold_) {
+            if (print_manifold)
+              std::cout << "(" << pt.x << ", " << pt.y << "), ";
+
+            graphics.add_to_queue(pt);
+
+          }
+
+          if (print_manifold) {
+            std::cout << "\n";
+            print_manifold = false;
+          }
+        }
+
+        // Draw any lines this collison needs drawn
+        if (collision->debug_) {
+          for (int idx = 0; idx < collision->lines_to_draw_.size(); idx ++) {
+            graphics.add_to_queue(collision->lines_to_draw_[idx].first, collision->lines_to_draw_[idx].second);
+          }
         }
       }
+      collision_proc.prune_resolved_collisions();
     }
 
+    // Point test1(5,5);
+    // Point test2(6,5);
+    // Point test3(5,6);
+    // graphics.add_to_queue(test1);
+    // graphics.add_to_queue(test2);
+    // graphics.add_to_queue(test3);
+
+    graphics.add_to_queue(movable_box);
     graphics.add_to_queue(block1);
-    // graphics.add_to_queue(block2);
-    graphics.add_to_queue(ball);
+    // graphics.add_to_queue(ball);
     
     graphics.draw_queue(SDL_GetTicks());
 

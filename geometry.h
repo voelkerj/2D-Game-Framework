@@ -63,6 +63,7 @@ class Vector2 {
   Vector2 cross(float number);
 
   void print();
+  void reset();
 };
 
 Vector2::Vector2() {
@@ -137,12 +138,17 @@ float Vector2::cross(Vector2 other) {
 }
 
 Vector2 Vector2::cross(float number) {
-  Vector2 result(-value[1] * number, value[0] * number);
+  Vector2 result(-1 * value[1] * number, value[0] * number);
   return result;
 }
 
 void Vector2::print() {
   std::cout << value[0] << ", " << value[1] << "\n";
+}
+
+void Vector2::reset() {
+  value[0] = 0;
+  value[1] = 0;
 }
 
 struct Edge {

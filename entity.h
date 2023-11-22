@@ -32,6 +32,7 @@ class Entity {
   void load_sprite_sheet(std::string sprite_sheet_path, SDL_Renderer* renderer);
   void update_state(std::vector<Force> forces, std::vector<Moment> moments,
                     Uint32 elapsed_time);
+  void print_state();
 
   void calculate_MOI();
   void calculate_vertices();
@@ -96,6 +97,25 @@ void Entity::update_state(std::vector<Force> forces,
 
   // Angle
   state.angle += state.angular_velocity * elapsed_time_float;
+}
+
+void Entity::print_state() {
+  std::cout << "=== " << name << " State Information ===\n";
+  std::cout << "Center: " << state.pos_x << ", " << state.pos_y << "\n";
+  if (shape == box) {
+    calculate_vertices();
+    calculate_vertices_in_WCS();
+    std::cout << "Vertices: ";
+    for (auto vertex : vertices_WCS) {
+      std::cout << "(" << vertex.x << ", " << vertex.y << "), ";
+    }
+    std::cout << "\n";
+  }
+  std::cout << "Angle: " << state.angle << "\n";
+  std::cout << "Velocity: " << state.vel_x << ", " << state.vel_y << "\n";
+  std::cout << "Acceleration: " << state.acc_x << ", " << state.acc_y << "\n";
+  std::cout << "Angular Velocity: " << state.angular_velocity << "\n";
+  std::cout << "========================\n";
 }
 
 void Entity::calculate_MOI() {
