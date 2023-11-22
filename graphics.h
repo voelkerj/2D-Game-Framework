@@ -62,10 +62,13 @@ Graphics::Graphics() {
   renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
   SDL_SetRenderDrawColor(renderer, 0x26, 0x26, 0x26, 0xFF);
 
+  int screen_width, screen_height;
+  SDL_GetRendererOutputSize(renderer, &screen_width, &screen_height);
+
   current_camera.pos_x = 0;
   current_camera.pos_y = 0;
-  current_camera.FOV_width = 19.2 * 2;
-  current_camera.FOV_height = 10.8 * 2;
+  current_camera.FOV_width = (screen_width / 100) * 2;
+  current_camera.FOV_height = (screen_height / 100) * 2;
 
   scale_x = window_width / current_camera.FOV_width;
   scale_y = window_height / current_camera.FOV_height;

@@ -3,13 +3,13 @@
 
 CMakeFiles/Platform_Demo.dir/Platform.cpp.obj: C:/Users/johnw/Code/2D-Game-Framework/Demos/Platform.cpp \
   C:/Users/johnw/Code/2D-Game-Framework/framework_main.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_main.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_stdinc.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_config.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_platform.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/begin_code.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/close_code.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_main.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_stdinc.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_config.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_platform.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/begin_code.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/close_code.h \
   C:/msys64/mingw64/include/winsdkver.h \
   C:/msys64/mingw64/include/winapifamily.h \
   C:/msys64/mingw64/include/sdkddkver.h \
@@ -27,20 +27,20 @@ CMakeFiles/Platform_Demo.dir/Platform.cpp.obj: C:/Users/johnw/Code/2D-Game-Frame
   C:/msys64/mingw64/include/_mingw_stdarg.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/stdint.h \
   C:/msys64/mingw64/include/stdint.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_assert.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_atomic.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_audio.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_error.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_endian.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_mutex.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_thread.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_assert.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_atomic.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_audio.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_error.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_endian.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_mutex.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_thread.h \
   C:/msys64/mingw64/include/process.h \
   C:/msys64/mingw64/include/corecrt_startup.h \
   C:/msys64/mingw64/include/sys/types.h \
   C:/msys64/mingw64/include/_mingw_off_t.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_rwops.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_clipboard.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_cpuinfo.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_rwops.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_clipboard.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_cpuinfo.h \
   C:/msys64/mingw64/include/intrin.h \
   C:/msys64/mingw64/include/setjmp.h \
   C:/msys64/mingw64/include/psdk_inc/intrin-impl.h \
@@ -149,43 +149,43 @@ CMakeFiles/Platform_Demo.dir/Platform.cpp.obj: C:/Users/johnw/Code/2D-Game-Frame
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/ammintrin.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/xopintrin.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/cpuid.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_events.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_video.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_pixels.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_rect.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_surface.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_blendmode.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_keyboard.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_keycode.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_scancode.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_mouse.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_joystick.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_guid.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_gamecontroller.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_sensor.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_quit.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_gesture.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_touch.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_filesystem.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_haptic.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_hidapi.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_hints.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_loadso.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_log.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_messagebox.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_metal.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_power.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_render.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_shape.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_system.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_timer.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_version.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_locale.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_misc.h \
-  C:/Libraries/SDL2_image-2.6.2/x86_64-w64-mingw32/include/SDL2/SDL_image.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_version.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/begin_code.h \
-  C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/close_code.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_events.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_video.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_pixels.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_rect.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_surface.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_blendmode.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_keyboard.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_keycode.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_scancode.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_mouse.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_joystick.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_guid.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_gamecontroller.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_sensor.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_quit.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_gesture.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_touch.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_filesystem.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_haptic.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_hidapi.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_hints.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_loadso.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_log.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_messagebox.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_metal.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_power.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_render.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_shape.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_system.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_timer.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_version.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_locale.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_misc.h \
+  C:/Users/johnw/Libraries/SDL2_image-2.6.3/x86_64-w64-mingw32/include/SDL2/SDL_image.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_version.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/begin_code.h \
+  C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/close_code.h \
   C:/Users/johnw/Code/2D-Game-Framework/animation.h \
   C:/msys64/mingw64/include/c++/12.2.0/vector \
   C:/msys64/mingw64/include/c++/12.2.0/bits/stl_algobase.h \
@@ -351,9 +351,21 @@ CMakeFiles/Platform_Demo.dir/Platform.cpp.obj: C:/Users/johnw/Code/2D-Game-Frame
   C:/Users/johnw/Code/2D-Game-Framework/inputs.h
 
 
-C:/msys64/mingw64/include/crtdefs.h:
+C:/msys64/mingw64/include/c++/12.2.0/x86_64-w64-mingw32/bits/error_constants.h:
 
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_config.h:
+C:/msys64/mingw64/include/c++/12.2.0/bits/invoke.h:
+
+C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/x86gprintrin.h:
+
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_platform.h:
+
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_mouse.h:
+
+C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/avx512pfintrin.h:
+
+C:/msys64/mingw64/include/winsdkver.h:
+
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_stdinc.h:
 
 C:/msys64/mingw64/include/c++/12.2.0/bits/std_abs.h:
 
@@ -361,49 +373,41 @@ C:/msys64/mingw64/include/c++/12.2.0/vector:
 
 C:/Users/johnw/Code/2D-Game-Framework/Demos/Platform.cpp:
 
-C:/msys64/mingw64/include/corecrt_wstdlib.h:
-
-C:/msys64/mingw64/include/_mingw_off_t.h:
-
-C:/msys64/mingw64/include/c++/12.2.0/bits/stl_uninitialized.h:
-
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/begin_code.h:
-
-C:/msys64/mingw64/include/c++/12.2.0/bits/exception.h:
-
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_main.h:
-
-C:/msys64/mingw64/include/c++/12.2.0/bits/locale_facets.tcc:
-
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_touch.h:
-
-C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/bmi2intrin.h:
-
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL.h:
-
 C:/msys64/mingw64/include/stddef.h:
 
 C:/Users/johnw/Code/2D-Game-Framework/framework_main.h:
 
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_platform.h:
+C:/msys64/mingw64/include/sys/timeb.h:
 
-C:/msys64/mingw64/include/c++/12.2.0/x86_64-w64-mingw32/bits/c++config.h:
+C:/msys64/mingw64/include/c++/12.2.0/bits/exception_defines.h:
 
-C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/avx512bf16intrin.h:
+C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/avx512vlintrin.h:
 
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_stdinc.h:
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL.h:
 
-C:/msys64/mingw64/include/c++/12.2.0/bits/shared_ptr.h:
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_rwops.h:
 
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/close_code.h:
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_main.h:
 
-C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/stdarg.h:
+C:/msys64/mingw64/include/c++/12.2.0/x86_64-w64-mingw32/bits/ctype_inline.h:
 
-C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/avx512pfintrin.h:
+C:/msys64/mingw64/include/stdint.h:
 
-C:/msys64/mingw64/include/winsdkver.h:
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_config.h:
 
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_rwops.h:
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_events.h:
+
+C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/ia32intrin.h:
+
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/begin_code.h:
+
+C:/msys64/mingw64/include/_mingw_secapi.h:
+
+C:/msys64/mingw64/include/locale.h:
+
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_hints.h:
+
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/close_code.h:
 
 C:/msys64/mingw64/include/sec_api/wchar_s.h:
 
@@ -413,25 +417,19 @@ C:/msys64/mingw64/include/sdkddkver.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/stddef.h:
 
+C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/ammintrin.h:
+
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_endian.h:
+
+C:/msys64/mingw64/include/crtdefs.h:
+
 C:/msys64/mingw64/include/c++/12.2.0/stdlib.h:
 
 C:/msys64/mingw64/include/corecrt.h:
 
 C:/msys64/mingw64/include/_mingw.h:
 
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_thread.h:
-
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_error.h:
-
 C:/msys64/mingw64/include/_mingw_mac.h:
-
-C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/ia32intrin.h:
-
-C:/msys64/mingw64/include/_mingw_secapi.h:
-
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_misc.h:
-
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_clipboard.h:
 
 C:/msys64/mingw64/include/vadefs.h:
 
@@ -443,7 +441,9 @@ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/avx512vbmivlintrin.h
 
 C:/msys64/mingw64/include/sdks/_mingw_ddk.h:
 
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_assert.h:
+C:/msys64/mingw64/include/c++/12.2.0/bits/shared_ptr.h:
+
+C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/stdarg.h:
 
 C:/msys64/mingw64/include/stdarg.h:
 
@@ -451,31 +451,41 @@ C:/msys64/mingw64/include/_mingw_stdarg.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/stdint.h:
 
-C:/msys64/mingw64/include/c++/12.2.0/x86_64-w64-mingw32/bits/ctype_inline.h:
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_cpuinfo.h:
 
-C:/msys64/mingw64/include/stdint.h:
+C:/msys64/mingw64/include/c++/12.2.0/bits/streambuf.tcc:
 
-C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/pconfigintrin.h:
+C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/fma4intrin.h:
 
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_atomic.h:
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_assert.h:
 
-C:/msys64/mingw64/include/time.h:
-
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_audio.h:
-
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_endian.h:
-
-C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/avx512ifmaintrin.h:
-
-C:/msys64/mingw64/include/errno.h:
-
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_mouse.h:
-
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_pixels.h:
-
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_mutex.h:
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_power.h:
 
 C:/msys64/mingw64/include/process.h:
+
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_atomic.h:
+
+C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/clflushoptintrin.h:
+
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_audio.h:
+
+C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/bmiintrin.h:
+
+C:/msys64/mingw64/include/c++/12.2.0/map:
+
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_error.h:
+
+C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/mm_malloc.h:
+
+C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/avxintrin.h:
+
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_mutex.h:
+
+C:/msys64/mingw64/include/malloc.h:
+
+C:/msys64/mingw64/include/c++/12.2.0/iostream:
+
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_thread.h:
 
 C:/Users/johnw/Code/2D-Game-Framework/collision.h:
 
@@ -485,15 +495,23 @@ C:/msys64/mingw64/include/limits.h:
 
 C:/msys64/mingw64/include/corecrt_startup.h:
 
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_hidapi.h:
+
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_touch.h:
+
 C:/msys64/mingw64/include/psdk_inc/intrin-impl.h:
 
 C:/msys64/mingw64/include/c++/12.2.0/bits/basic_ios.tcc:
 
 C:/msys64/mingw64/include/sys/types.h:
 
-C:/msys64/mingw64/include/c++/12.2.0/cstdlib:
+C:/msys64/mingw64/include/corecrt_wstdlib.h:
 
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_cpuinfo.h:
+C:/msys64/mingw64/include/_mingw_off_t.h:
+
+C:/msys64/mingw64/include/c++/12.2.0/x86_64-w64-mingw32/bits/c++config.h:
+
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_clipboard.h:
 
 C:/msys64/mingw64/include/c++/12.2.0/bits/locale_facets.h:
 
@@ -505,7 +523,7 @@ C:/msys64/mingw64/include/intrin.h:
 
 C:/msys64/mingw64/include/setjmp.h:
 
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_metal.h:
+C:/msys64/mingw64/include/c++/12.2.0/cstdlib:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/avx512vpopcntdqintrin.h:
 
@@ -525,27 +543,21 @@ C:/msys64/mingw64/include/stdlib.h:
 
 C:/msys64/mingw64/include/sec_api/stdlib_s.h:
 
-C:/msys64/mingw64/include/malloc.h:
+C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/avx512ifmaintrin.h:
 
-C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/mm_malloc.h:
+C:/msys64/mingw64/include/errno.h:
 
 C:/msys64/mingw64/include/c++/12.2.0/bits/alloc_traits.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/x86intrin.h:
 
-C:/msys64/mingw64/include/c++/12.2.0/x86_64-w64-mingw32/bits/error_constants.h:
-
-C:/msys64/mingw64/include/c++/12.2.0/bits/invoke.h:
-
-C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/x86gprintrin.h:
-
 C:/msys64/mingw64/include/c++/12.2.0/bits/basic_ios.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/adxintrin.h:
 
-C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/clflushoptintrin.h:
+C:/msys64/mingw64/include/c++/12.2.0/bits/locale_facets.tcc:
 
-C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/bmiintrin.h:
+C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/bmi2intrin.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/cetintrin.h:
 
@@ -581,15 +593,21 @@ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/mwaitintrin.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/mwaitxintrin.h:
 
+C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/pconfigintrin.h:
+
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/popcntintrin.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/pkuintrin.h:
+
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_system.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/wmmintrin.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/rdseedintrin.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/rtmintrin.h:
+
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_version.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/serializeintrin.h:
 
@@ -607,11 +625,7 @@ C:/Users/johnw/Code/2D-Game-Framework/graphics.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/wbnoinvdintrin.h:
 
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_locale.h:
-
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/xsaveintrin.h:
-
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_events.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/xsaveoptintrin.h:
 
@@ -626,8 +640,6 @@ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/xtestintrin.h:
 C:/msys64/mingw64/include/c++/12.2.0/bits/stl_function.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/hresetintrin.h:
-
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_version.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/immintrin.h:
 
@@ -644,8 +656,6 @@ C:/msys64/mingw64/include/c++/12.2.0/bits/ios_base.h:
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/tmmintrin.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/smmintrin.h:
-
-C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/avxintrin.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/avxvnniintrin.h:
 
@@ -666,12 +676,6 @@ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/prfchwintrin.h:
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/avx512bitalgintrin.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/avx512cdintrin.h:
-
-C:/msys64/mingw64/include/sys/timeb.h:
-
-C:/msys64/mingw64/include/c++/12.2.0/bits/exception_defines.h:
-
-C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/avx512vlintrin.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/avx512dqintrin.h:
 
@@ -725,25 +729,25 @@ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/vpclmulqdqintrin.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/avx512bf16vlintrin.h:
 
+C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/avx512bf16intrin.h:
+
 C:/msys64/mingw64/include/c++/12.2.0/tr1/poly_laguerre.tcc:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/amxtileintrin.h:
 
 C:/msys64/mingw64/include/corecrt_stdio_config.h:
 
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_metal.h:
+
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/amxint8intrin.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/amxbf16intrin.h:
 
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_pixels.h:
+
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/keylockerintrin.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/mm3dnow.h:
-
-C:/msys64/mingw64/include/c++/12.2.0/bits/streambuf.tcc:
-
-C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/fma4intrin.h:
-
-C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/ammintrin.h:
 
 C:/Users/johnw/Code/2D-Game-Framework/frame_manager.h:
 
@@ -751,69 +755,63 @@ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/xopintrin.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/12.2.0/include/cpuid.h:
 
-C:/msys64/mingw64/include/signal.h:
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_video.h:
 
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_video.h:
+C:/msys64/mingw64/include/c++/12.2.0/backward/auto_ptr.h:
 
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_rect.h:
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_rect.h:
 
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_surface.h:
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_surface.h:
 
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_blendmode.h:
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_blendmode.h:
 
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_keyboard.h:
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_keyboard.h:
 
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_keycode.h:
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_keycode.h:
 
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_scancode.h:
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_scancode.h:
 
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_joystick.h:
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_joystick.h:
 
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_system.h:
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_guid.h:
 
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_guid.h:
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_gamecontroller.h:
 
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_gamecontroller.h:
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_sensor.h:
 
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_sensor.h:
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_quit.h:
 
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_quit.h:
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_gesture.h:
 
-C:/msys64/mingw64/include/c++/12.2.0/iostream:
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_filesystem.h:
 
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_gesture.h:
+C:/msys64/mingw64/include/c++/12.2.0/istream:
 
-C:/msys64/mingw64/include/c++/12.2.0/bits/concept_check.h:
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_haptic.h:
 
-C:/msys64/mingw64/include/c++/12.2.0/bits/functexcept.h:
+C:/msys64/mingw64/include/c++/12.2.0/bits/vector.tcc:
 
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_filesystem.h:
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_loadso.h:
 
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_haptic.h:
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_log.h:
 
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_hidapi.h:
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_messagebox.h:
+
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_render.h:
 
 C:/msys64/mingw64/include/c++/12.2.0/x86_64-w64-mingw32/bits/atomic_word.h:
 
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_hints.h:
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_shape.h:
 
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_loadso.h:
+C:/msys64/mingw64/include/c++/12.2.0/bits/stl_pair.h:
 
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_log.h:
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_timer.h:
 
-C:/msys64/mingw64/include/c++/12.2.0/bits/stl_map.h:
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_locale.h:
 
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_messagebox.h:
+C:/Users/johnw/Libraries/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2/SDL_misc.h:
 
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_power.h:
-
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_render.h:
-
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_shape.h:
-
-C:/Libraries/SDL2-2.26.2/x86_64-w64-mingw32/include/SDL2/SDL_timer.h:
-
-C:/Libraries/SDL2_image-2.6.2/x86_64-w64-mingw32/include/SDL2/SDL_image.h:
+C:/Users/johnw/Libraries/SDL2_image-2.6.3/x86_64-w64-mingw32/include/SDL2/SDL_image.h:
 
 C:/msys64/mingw64/include/pthread_compat.h:
 
@@ -821,13 +819,15 @@ C:/msys64/mingw64/include/c++/12.2.0/bits/range_access.h:
 
 C:/msys64/mingw64/include/c++/12.2.0/bits/stl_algobase.h:
 
+C:/msys64/mingw64/include/c++/12.2.0/bits/concept_check.h:
+
+C:/msys64/mingw64/include/c++/12.2.0/bits/functexcept.h:
+
 C:/msys64/mingw64/include/c++/12.2.0/bits/functional_hash.h:
 
 C:/msys64/mingw64/include/c++/12.2.0/bits/cpp_type_traits.h:
 
 C:/msys64/mingw64/include/c++/12.2.0/ext/numeric_traits.h:
-
-C:/msys64/mingw64/include/c++/12.2.0/bits/stl_pair.h:
 
 C:/msys64/mingw64/include/c++/12.2.0/type_traits:
 
@@ -855,7 +855,11 @@ C:/msys64/mingw64/include/c++/12.2.0/bits/allocator.h:
 
 C:/msys64/mingw64/include/c++/12.2.0/x86_64-w64-mingw32/bits/c++allocator.h:
 
+C:/msys64/mingw64/include/c++/12.2.0/bits/exception.h:
+
 C:/msys64/mingw64/include/c++/12.2.0/bits/memoryfwd.h:
+
+C:/msys64/mingw64/include/c++/12.2.0/bits/stl_uninitialized.h:
 
 C:/msys64/mingw64/include/c++/12.2.0/bits/stl_tree.h:
 
@@ -872,8 +876,6 @@ C:/msys64/mingw64/include/c++/12.2.0/bit:
 C:/msys64/mingw64/include/c++/12.2.0/bits/hash_bytes.h:
 
 C:/msys64/mingw64/include/c++/12.2.0/backward/binders.h:
-
-C:/msys64/mingw64/include/c++/12.2.0/bits/vector.tcc:
 
 C:/Users/johnw/Code/2D-Game-Framework/entity.h:
 
@@ -902,8 +904,6 @@ C:/msys64/mingw64/include/c++/12.2.0/cstdint:
 C:/msys64/mingw64/include/c++/12.2.0/bits/localefwd.h:
 
 C:/msys64/mingw64/include/c++/12.2.0/clocale:
-
-C:/msys64/mingw64/include/locale.h:
 
 C:/msys64/mingw64/include/stdio.h:
 
@@ -987,7 +987,11 @@ C:/msys64/mingw64/include/c++/12.2.0/x86_64-w64-mingw32/bits/gthr-default.h:
 
 C:/msys64/mingw64/include/pthread.h:
 
+C:/msys64/mingw64/include/signal.h:
+
 C:/msys64/mingw64/include/pthread_signal.h:
+
+C:/msys64/mingw64/include/time.h:
 
 C:/msys64/mingw64/include/sec_api/sys/timeb_s.h:
 
@@ -1009,13 +1013,11 @@ C:/msys64/mingw64/include/c++/12.2.0/cwctype:
 
 C:/msys64/mingw64/include/c++/12.2.0/bits/ostream.tcc:
 
-C:/msys64/mingw64/include/c++/12.2.0/istream:
-
-C:/msys64/mingw64/include/c++/12.2.0/map:
-
 C:/msys64/mingw64/include/c++/12.2.0/ext/aligned_buffer.h:
 
 C:/msys64/mingw64/include/c++/12.2.0/bits/node_handle.h:
+
+C:/msys64/mingw64/include/c++/12.2.0/bits/stl_map.h:
 
 C:/msys64/mingw64/include/c++/12.2.0/tuple:
 
@@ -1038,5 +1040,3 @@ C:/msys64/mingw64/include/c++/12.2.0/bits/shared_ptr_base.h:
 C:/msys64/mingw64/include/c++/12.2.0/bits/allocated_ptr.h:
 
 C:/msys64/mingw64/include/c++/12.2.0/bits/atomic_lockfree_defines.h:
-
-C:/msys64/mingw64/include/c++/12.2.0/backward/auto_ptr.h:
