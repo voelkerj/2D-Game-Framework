@@ -7,7 +7,7 @@
 #include <vector>
 
 struct Camera {
-  // Position of Camera's origin point (bottom left of screen)
+  // Position of Camera's origin point (center of screen)
   float pos_x;
   float pos_y;
 
@@ -95,11 +95,10 @@ void Graphics::add_to_queue(Point a) {
 
 bool Graphics::point_within_camera_view(float x, float y) {
   // Input a point in world coordinate system, function returns true/false if the camera can see it
-
-  if (x >= current_camera.pos_x &
-      x <= current_camera.pos_x + current_camera.FOV_width &
-      y >= current_camera.pos_y &
-      y <= current_camera.pos_y + current_camera.FOV_height)
+  if (x >= (current_camera.pos_x - (current_camera.FOV_width / 2)) &
+      x <= (current_camera.pos_x + (current_camera.FOV_width / 2)) &
+      y >= (current_camera.pos_y - (current_camera.FOV_height / 2)) &
+      y <= (current_camera.pos_y + (current_camera.FOV_height / 2)))
     return true;
 
   return false;
@@ -158,14 +157,8 @@ void Graphics::draw_entity(Uint32 current_ticks, Entity* entity) {
     SDL_Rect clipping_rect = animation.get_frame(current_ticks);
 
     SDL_Rect destination_rect;
-    destination_rect.x =
-        (entity->state.pos_x - entity->size_x / 2 - current_camera.pos_x) *
-        scale_x;
-    destination_rect.y =
-        window_height -
-        (entity->state.pos_y - entity->size_y / 2 - current_camera.pos_y) *
-            scale_y -
-        (entity->size_y * scale_y);
+    destination_rect.x = (entity->state.pos_x - entity->size_x / 2 - (current_camera.pos_x - (current_camera.FOV_width / 2))) * scale_x;
+    destination_rect.y = window_height - (entity->state.pos_y - entity->size_y / 2 - (current_camera.pos_y - (current_camera.FOV_height / 2))) * scale_y - (entity->size_y * scale_y);
     destination_rect.w = entity->size_x * scale_x;
     destination_rect.h = entity->size_y * scale_y;
 
@@ -185,12 +178,8 @@ void Graphics::draw_entity(Uint32 current_ticks, Entity* entity) {
       // Display entity vertices
       for (Point point : entity->vertices_WCS) {
         SDL_SetRenderDrawColor(renderer, 0x48, 0xff, 0x82, 0xFF);
-
-        float pt_x = (point.x - current_camera.pos_x) * scale_x;
-        float pt_y =
-            window_height -
-            (point.y - entity->size_y - current_camera.pos_y) * scale_y -
-            (entity->size_y * scale_y);
+        float pt_x = (point.x - (current_camera.pos_x - (current_camera.FOV_width / 2))) * scale_x;
+        float pt_y = window_height - (point.y - entity->size_y - (current_camera.pos_y - (current_camera.FOV_height / 2))) * scale_y - (entity->size_y * scale_y);
 
         SDL_RenderDrawPoint(renderer, pt_x, pt_y);
       }
@@ -203,11 +192,11 @@ void Graphics::draw_entity(Uint32 current_ticks, Entity* entity) {
 }
 
 void Graphics::draw_line(Point a, Point b, int color[4]) {
-  float a_x = (a.x - current_camera.pos_x) * scale_x;
-  float a_y = window_height - (a.y - current_camera.pos_y) * scale_y;
+  float a_x = (a.x - (current_camera.pos_x - (current_camera.FOV_width / 2))) * scale_x;
+  float a_y = window_height - (a.y - (current_camera.pos_y - (current_camera.FOV_height / 2))) * scale_y;
 
-  float b_x = (b.x - current_camera.pos_x) * scale_x;
-  float b_y = window_height - (b.y - current_camera.pos_y) * scale_y;
+  float b_x = (b.x - (current_camera.pos_x - (current_camera.FOV_width / 2))) * scale_x;
+  float b_y = window_height - (b.y - (current_camera.pos_y - (current_camera.FOV_height / 2))) * scale_y;
 
   SDL_SetRenderDrawColor(renderer, color[0], color[1], color[2], color[3]);
 
@@ -217,8 +206,8 @@ void Graphics::draw_line(Point a, Point b, int color[4]) {
 void Graphics::draw_point(Point a) {
   SDL_SetRenderDrawColor(renderer, 0xff, 0xe9, 0x1a, 0xFF);
 
-  float a_x = (a.x - current_camera.pos_x) * scale_x;
-  float a_y = window_height - (a.y - current_camera.pos_y) * scale_y;
+  float a_x = (a.x - (current_camera.pos_x - (current_camera.FOV_width / 2))) * scale_x;
+  float a_y = window_height - (a.y - (current_camera.pos_y - (current_camera.FOV_height / 2))) * scale_y;
 
   SDL_RenderDrawPoint(renderer, a_x, a_y);  // Actual Point
 
@@ -247,10 +236,10 @@ void Graphics::draw_grid() {
   int color[4] = {15, 15, 15, 255};
 
   // Get x/y min/max of grid lines
-  int lines_xmin = floor(current_camera.pos_x);
-  int lines_xmax = ceil(current_camera.pos_x + current_camera.FOV_width);
-  int lines_ymin = floor(current_camera.pos_y);
-  int lines_ymax = ceil(current_camera.pos_y + current_camera.FOV_height);
+  int lines_xmin = floor((current_camera.pos_x - (current_camera.FOV_width / 2)));
+  int lines_xmax = ceil((current_camera.pos_x - (current_camera.FOV_width / 2)) + current_camera.FOV_width);
+  int lines_ymin = floor((current_camera.pos_y - (current_camera.FOV_height / 2)));
+  int lines_ymax = ceil((current_camera.pos_y - (current_camera.FOV_height / 2)) + current_camera.FOV_height);
 
   // Queue up vertical lines
   int num_vertical_lines = lines_xmax - lines_xmin;
