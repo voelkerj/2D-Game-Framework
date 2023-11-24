@@ -171,6 +171,11 @@ int main(int argc, char** argv) {
         block1.state.angle += 3;
       if (inputs.is_held(SDL_SCANCODE_E))
         block1.state.angle -= 3;
+      
+      if (inputs.is_held(SDL_SCANCODE_M))
+        graphics.current_camera.zoom += 1;
+      if (inputs.is_held(SDL_SCANCODE_N))
+        graphics.current_camera.zoom -= 1;
 
       if (inputs.was_pressed(SDL_SCANCODE_F1)) {
         if (collision_proc.debug) // Hardcoded to be true above

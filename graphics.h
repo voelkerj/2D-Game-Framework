@@ -11,6 +11,8 @@ struct Camera {
   float pos_x;
   float pos_y;
 
+  float zoom{50}; // Camera zoom factor. Zoom factor of 1 means 1 pixel = 1 world unit
+
   // Width of the Camera's projected FOV
   float FOV_width;
   float FOV_height;
@@ -67,8 +69,8 @@ Graphics::Graphics() {
 
   current_camera.pos_x = 0;
   current_camera.pos_y = 0;
-  current_camera.FOV_width = (screen_width / 100) * 2;
-  current_camera.FOV_height = (screen_height / 100) * 2;
+  current_camera.FOV_width = screen_width / current_camera.zoom;
+  current_camera.FOV_height = screen_height / current_camera.zoom;
 
   scale_x = window_width / current_camera.FOV_width;
   scale_y = window_height / current_camera.FOV_height;
@@ -104,6 +106,15 @@ bool Graphics::point_within_camera_view(float x, float y) {
 }
 
 void Graphics::draw_queue(Uint32 current_ticks) {
+  //Update camera FOV
+  int screen_width, screen_height;
+  SDL_GetRendererOutputSize(renderer, &screen_width, &screen_height);
+  current_camera.FOV_width = screen_width / current_camera.zoom;
+  current_camera.FOV_height = screen_height / current_camera.zoom;
+
+  scale_x = window_width / current_camera.FOV_width;
+  scale_y = window_height / current_camera.FOV_height;
+
   // Draw Entities
   for (auto& entity : entity_queue) {
     draw_entity(current_ticks, entity);
