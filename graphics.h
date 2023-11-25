@@ -114,6 +114,10 @@ void Graphics::draw_queue(Uint32 current_ticks) {
   scale_x = window_width / current_camera.FOV_width;
   scale_y = window_height / current_camera.FOV_height;
 
+  if (debug) {
+    draw_grid();
+  }
+
   // Draw Entities
   for (auto& entity : entity_queue) {
     draw_entity(current_ticks, entity);
@@ -183,8 +187,6 @@ void Graphics::draw_entity(Uint32 current_ticks, Entity* entity) {
 
         SDL_RenderDrawPoint(renderer, pt_x, pt_y);
       }
-
-      draw_grid();
 
       SDL_SetRenderDrawColor(renderer, 0x26, 0x26, 0x26, 0xFF);
     }
