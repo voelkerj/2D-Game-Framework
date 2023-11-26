@@ -32,20 +32,6 @@ int main(int argc, char** argv) {
   block1.size_x = 8;
   block1.size_y = 3;
 
-  // Example 2
-  // block1.state.pos_x = 5.5;
-  // block1.state.pos_y = 7.5;
-  // block1.size_x = sqrt(18);
-  // block1.size_y = sqrt(32);
-  // block1.state.angle = 45;
-
-  // Example 3
-  // block1.state.pos_x = 11.5;
-  // block1.state.pos_y = 5.5;
-  // block1.size_x = sqrt(17);
-  // block1.size_y = sqrt(17);
-  // block1.state.angle = -22.3082224007915;
-
   Entity ball;
   ball.shape = circle;
   ball.load_sprite_sheet(base_path + "..\\resources\\ball.png",

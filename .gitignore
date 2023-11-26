@@ -37,3 +37,4 @@
 # Other
 *.bin
 *.log
+/backups

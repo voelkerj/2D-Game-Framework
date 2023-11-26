@@ -19,15 +19,15 @@ set(SDL2_IMAGE_LIBRARIES "${SDL2_image_DIR}/x86_64-w64-mingw32/lib/libSDL2_image
 # set(SDL2_TTF_INCLUDE_DIRS "${SDL2_ttf_DIR}/x86_64-w64-mingw32/include/SDL2")
 # set(SDL2_TTF_LIBRARIES "${SDL2_ttf_DIR}/x86_64-w64-mingw32/lib/libSDL2_ttf.dll.a")
 
-project(Platform_Demo)
+project(Demo)
 
-add_executable(Platform_Demo 
-    ../Platform.cpp
+add_executable(Demo 
+    ../Demo.cpp
 )
 
-target_link_libraries(Platform_Demo -lmingw32 ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES}) # ${SDL2_TTF_LIBRARIES})
+target_link_libraries(Demo -lmingw32 ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES}) # ${SDL2_TTF_LIBRARIES})
 
-target_include_directories(Platform_Demo 
+target_include_directories(Demo 
     PUBLIC ${SDL2_INCLUDE_DIRS}
     PUBLIC ${SDL2_IMAGE_INCLUDE_DIRS}
     # PUBLIC ${SDL2_TTF_INCLUDE_DIRS}

@@ -1,5 +1,5 @@
 cd Demos\build
-del Platform_Demo.exe
+del Demo.exe
 mingw32-make.exe -j6
 cd ..
-:: "%cd%"\build\Platform_Demo.exe
+:: "%cd%"\build\Demo.exe
