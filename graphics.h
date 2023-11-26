@@ -139,22 +139,18 @@ void Graphics::draw_queue(Uint32 current_ticks) {
 }
 
 void Graphics::draw_entity(Uint32 current_ticks, Entity* entity) {
-
   // If entity is within the camera bounds
-  if (point_within_camera_view(
-          entity->state.pos_x - entity->size_x / 2,
-          entity->state.pos_y - entity->size_y / 2) ||  // Check Bottom-Left
-      point_within_camera_view(
-          entity->state.pos_x - entity->size_x / 2,
-          entity->state.pos_y + entity->size_y / 2) ||  // Check Top-Left
-      point_within_camera_view(
-          entity->state.pos_x + entity->size_x / 2,
-          entity->state.pos_y - entity->size_y / 2) ||  // Check Bottom-Right
-      point_within_camera_view(
-          entity->state.pos_x + entity->size_x / 2,
-          entity->state.pos_y + entity->size_y / 2))  // Check Top-Right
-  {
+  entity->calculate_vertices();
+  entity->calculate_vertices_in_WCS();
 
+  bool inFOV{false};
+
+  for (Point pt : entity->vertices_WCS) {
+    if (point_within_camera_view(pt.x, pt.y))
+      inFOV = true;
+  }
+
+    if (inFOV) {
     // Draw Entity
     Animation& animation = entity->animations[entity->current_animation];
 

@@ -257,7 +257,7 @@ int main(int argc, char** argv) {
     // graphics.add_to_queue(test3);
 
     graphics.add_to_queue(movable_box);
-    graphics.add_to_queue(block1);
+    // graphics.add_to_queue(block1);
     // graphics.add_to_queue(ball);
     
     graphics.draw_queue(SDL_GetTicks());
