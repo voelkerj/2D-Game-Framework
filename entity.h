@@ -6,6 +6,7 @@
 #include "physics.h"
 #include "animation.h"
 #include "geometry.h"
+
 #include <string>
 #include <vector>
 #include <map>
@@ -27,7 +28,12 @@ class Entity {
   std::string name;
 
   Entity(){};
-  ~Entity(){};
+  Entity(std::string name_in, Shape shape_in, State state_in, float size_x_in, float size_y_in, std::string sprite_path, SDL_Renderer* renderer);
+  Entity(Shape shape_in, State state_in, float size_x_in, float size_y_in, std::string sprite_path, SDL_Renderer* renderer);
+  ~Entity(){std::cout << "Destructor: " << name << "\n";};
+  Entity(const Entity& entity); // Copy
+  Entity& operator=(const Entity& entity); // Copy  Assignment
+  Entity(Entity&& entity); // Move
 
   void load_sprite_sheet(std::string sprite_sheet_path, SDL_Renderer* renderer);
   void update_state(std::vector<Force> forces, std::vector<Moment> moments,
@@ -43,6 +49,76 @@ class Entity {
   float get_min_y_WCS();
   float get_max_y_WCS();
 };
+
+Entity::Entity(const Entity& entity) {
+  std::cout << "Copy\n";
+  this->size_x            = entity.size_x;
+  this->size_y            = entity.size_y;
+  this->mass              = entity.mass;
+  this->state             = entity.state;
+  this->animations        = entity.animations;
+  this->current_animation = entity.current_animation;
+  this->sprite_sheet      = entity.sprite_sheet;
+  this->MoI               = entity.MoI;
+  this->shape             = entity.shape;
+  this->vertices          = entity.vertices;
+  this->vertices_WCS      = entity.vertices_WCS;
+  this->name              = entity.name;
+}
+
+Entity::Entity(Entity&& entity) {
+  std::cout << "Move\n";
+  this->size_x            = entity.size_x;
+  this->size_y            = entity.size_y;
+  this->mass              = entity.mass;
+  this->state             = entity.state;
+  this->animations        = entity.animations;
+  this->current_animation = entity.current_animation;
+  this->sprite_sheet      = entity.sprite_sheet;
+  this->MoI               = entity.MoI;
+  this->shape             = entity.shape;
+  this->vertices          = entity.vertices;
+  this->vertices_WCS      = entity.vertices_WCS;
+  this->name              = entity.name;
+}
+
+Entity& Entity::operator=(const Entity& entity) {
+  std::cout << "Copy assignment\n";
+  if (this != &entity) {
+    this->size_x            = entity.size_x;
+    this->size_y            = entity.size_y;
+    this->mass              = entity.mass;
+    this->state             = entity.state;
+    this->animations        = entity.animations;
+    this->current_animation = entity.current_animation;
+    this->sprite_sheet      = entity.sprite_sheet;
+    this->MoI               = entity.MoI;
+    this->shape             = entity.shape;
+    this->vertices          = entity.vertices;
+    this->vertices_WCS      = entity.vertices_WCS;
+    this->name              = entity.name;
+  }
+
+  return *this;
+}
+
+Entity::Entity(std::string name_in, Shape shape_in, State state_in, float size_x_in, float size_y_in, std::string sprite_path, SDL_Renderer* renderer) {
+  name = name_in;
+  shape = shape_in;
+  state = state_in;
+  size_x = size_x_in;
+  size_y = size_y_in;
+  load_sprite_sheet(sprite_path, renderer);
+}
+
+Entity::Entity(Shape shape_in, State state_in, float size_x_in, float size_y_in, std::string sprite_path, SDL_Renderer* renderer) {
+  name = std::to_string((unsigned long long) (void**)this);
+  shape = shape_in;
+  state = state_in;
+  size_x = size_x_in;
+  size_y = size_y_in;
+  load_sprite_sheet(sprite_path, renderer);
+}
 
 void Entity::load_sprite_sheet(std::string sprite_sheet_path,
                                SDL_Renderer* renderer) {

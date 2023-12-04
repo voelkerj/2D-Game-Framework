@@ -1,3 +1,0 @@
-"C:\Program Files\CMake\bin\cmake.exe" -E rm -f CMakeFiles\Platform_Demo.dir/objects.a
-C:\msys64\mingw64\bin\ar.exe qc CMakeFiles\Platform_Demo.dir/objects.a @CMakeFiles\Platform_Demo.dir\objects1
-C:\msys64\mingw64\bin\c++.exe -g -Wl,--whole-archive CMakeFiles\Platform_Demo.dir/objects.a -Wl,--no-whole-archive -o Platform_Demo.exe -Wl,--out-implib,libPlatform_Demo.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\Platform_Demo.dir\linkLibs.rsp

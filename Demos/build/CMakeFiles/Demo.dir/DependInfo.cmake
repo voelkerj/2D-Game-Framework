@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "C:/Users/johnw/Code/2D-Game-Framework/Demos/Platform.cpp" "CMakeFiles/Platform_Demo.dir/Platform.cpp.obj" "gcc" "CMakeFiles/Platform_Demo.dir/Platform.cpp.obj.d"
+  "C:/Users/johnw/Code/2D-Game-Framework/Demos/Demo.cpp" "CMakeFiles/Demo.dir/Demo.cpp.obj" "gcc" "CMakeFiles/Demo.dir/Demo.cpp.obj.d"
   )
 
 # Targets to which this target links.

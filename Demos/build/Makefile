@@ -116,41 +116,41 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named Platform_Demo
+# Target rules for targets named Demo
 
 # Build rule for target.
-Platform_Demo: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 Platform_Demo
-.PHONY : Platform_Demo
+Demo: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 Demo
+.PHONY : Demo
 
 # fast build rule for target.
-Platform_Demo/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Platform_Demo.dir\build.make CMakeFiles/Platform_Demo.dir/build
-.PHONY : Platform_Demo/fast
+Demo/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Demo.dir\build.make CMakeFiles/Demo.dir/build
+.PHONY : Demo/fast
 
-Platform.obj: Platform.cpp.obj
-.PHONY : Platform.obj
+Demo.obj: Demo.cpp.obj
+.PHONY : Demo.obj
 
 # target to build an object file
-Platform.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Platform_Demo.dir\build.make CMakeFiles/Platform_Demo.dir/Platform.cpp.obj
-.PHONY : Platform.cpp.obj
+Demo.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Demo.dir\build.make CMakeFiles/Demo.dir/Demo.cpp.obj
+.PHONY : Demo.cpp.obj
 
-Platform.i: Platform.cpp.i
-.PHONY : Platform.i
+Demo.i: Demo.cpp.i
+.PHONY : Demo.i
 
 # target to preprocess a source file
-Platform.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Platform_Demo.dir\build.make CMakeFiles/Platform_Demo.dir/Platform.cpp.i
-.PHONY : Platform.cpp.i
+Demo.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Demo.dir\build.make CMakeFiles/Demo.dir/Demo.cpp.i
+.PHONY : Demo.cpp.i
 
-Platform.s: Platform.cpp.s
-.PHONY : Platform.s
+Demo.s: Demo.cpp.s
+.PHONY : Demo.s
 
 # target to generate assembly for a file
-Platform.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Platform_Demo.dir\build.make CMakeFiles/Platform_Demo.dir/Platform.cpp.s
-.PHONY : Platform.cpp.s
+Demo.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Demo.dir\build.make CMakeFiles/Demo.dir/Demo.cpp.s
+.PHONY : Demo.cpp.s
 
 # Help Target
 help:
@@ -160,10 +160,10 @@ help:
 	@echo ... depend
 	@echo ... edit_cache
 	@echo ... rebuild_cache
-	@echo ... Platform_Demo
-	@echo ... Platform.obj
-	@echo ... Platform.i
-	@echo ... Platform.s
+	@echo ... Demo
+	@echo ... Demo.obj
+	@echo ... Demo.i
+	@echo ... Demo.s
 .PHONY : help
 
 

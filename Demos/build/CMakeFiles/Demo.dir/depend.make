@@ -1,2 +1,2 @@
-# Empty dependencies file for Platform_Demo.
+# Empty dependencies file for Demo.
 # This may be replaced when dependencies are built.

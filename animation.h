@@ -12,12 +12,20 @@ class Animation {
   std::vector<SDL_Rect> frame_rects;
 
   Animation(){};
+  Animation(const Animation& animation);
   ~Animation(){};
 
   void add_frame(int x, int y, int width, int height);
   SDL_Rect get_frame(Uint32 current_ticks);
   void reset();
 };
+
+Animation::Animation(const Animation& animation) {
+  this->frame_idx = animation.frame_idx;
+  this->update_interval = animation.update_interval;
+  this->prev_update_ticks = animation.prev_update_ticks;
+  this->frame_rects = animation.frame_rects;
+}
 
 void Animation::add_frame(int x, int y, int width, int height) {
   SDL_Rect rect;
