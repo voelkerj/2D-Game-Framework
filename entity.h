@@ -27,10 +27,9 @@ class Entity {
   std::vector<Point> vertices_WCS;
   std::string name;
 
-  Entity(){};
   Entity(std::string name_in, Shape shape_in, State state_in, float size_x_in, float size_y_in, std::string sprite_path, SDL_Renderer* renderer);
   Entity(Shape shape_in, State state_in, float size_x_in, float size_y_in, std::string sprite_path, SDL_Renderer* renderer);
-  ~Entity(){std::cout << "Destructor: " << name << "\n";};
+  ~Entity();
   Entity(const Entity& entity); // Copy
   Entity& operator=(const Entity& entity); // Copy  Assignment
   Entity(Entity&& entity); // Move
@@ -50,8 +49,12 @@ class Entity {
   float get_max_y_WCS();
 };
 
+Entity::~Entity() {
+  // std::cout << "Destructor: " << name << "\n";
+}
+
 Entity::Entity(const Entity& entity) {
-  std::cout << "Copy\n";
+  // std::cout << "Copy " << entity.name << "\n";
   this->size_x            = entity.size_x;
   this->size_y            = entity.size_y;
   this->mass              = entity.mass;
@@ -67,7 +70,7 @@ Entity::Entity(const Entity& entity) {
 }
 
 Entity::Entity(Entity&& entity) {
-  std::cout << "Move\n";
+  // std::cout << "Move\n";
   this->size_x            = entity.size_x;
   this->size_y            = entity.size_y;
   this->mass              = entity.mass;
@@ -83,7 +86,7 @@ Entity::Entity(Entity&& entity) {
 }
 
 Entity& Entity::operator=(const Entity& entity) {
-  std::cout << "Copy assignment\n";
+  // std::cout << "Copy assignment\n";
   if (this != &entity) {
     this->size_x            = entity.size_x;
     this->size_y            = entity.size_y;

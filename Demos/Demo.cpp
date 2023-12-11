@@ -1,4 +1,5 @@
 #include "../framework_main.h"
+#include <memory>
 
 int main(int argc, char** argv) {
 
@@ -27,8 +28,7 @@ int main(int argc, char** argv) {
   // block.animations["idle"] = block_idle;
   // block.current_animation = "idle";
 
-  std::vector<Entity*> entities;
-  // entities.push_back(&block);
+  std::vector<Entity> entities;
 
   bool print_manifold = false;
 
@@ -40,8 +40,8 @@ int main(int argc, char** argv) {
     graphics.clear_screen();
     graphics.clear_queue();
 
-    collision_proc.evaluate_collisions(entities);
-    collision_proc.prune_resolved_collisions();
+    // collision_proc.evaluate_collisions(entities);
+    // collision_proc.prune_resolved_collisions();
 
     // Handle Keyboard and Close Button
     if (SDL_PollEvent(&event)) {
@@ -79,12 +79,14 @@ int main(int argc, char** argv) {
         new_entity_state.pos_x = mouse_WCS.x;
         new_entity_state.pos_y = mouse_WCS.y;
 
-        Entity new_entity(box, new_entity_state, 1, 1, sprite_path, graphics.renderer);
+        // Entity new_entity(box, new_entity_state, 1, 1, sprite_path, graphics.renderer);
 
-        new_entity.animations["idle"] = block_idle;
-        new_entity.current_animation = "idle";
+        // new_entity.animations["idle"] = block_idle;
+        // new_entity.current_animation = "idle";
 
-        entities.emplace_back(&new_entity);
+        entities.emplace_back(box, new_entity_state, 1, 1, sprite_path, graphics.renderer);
+        entities.back().animations["idle"] = block_idle;
+        entities.back().current_animation = "idle";
       }
 
       if (inputs.is_held(SDL_SCANCODE_M))
@@ -105,9 +107,13 @@ int main(int argc, char** argv) {
           graphics.debug = true;
       }
 
+      if (inputs.was_pressed(SDL_SCANCODE_C)) {
+        std::cout << "Camera: " << graphics.current_camera.pos_x << ", " << graphics.current_camera.pos_y << "\n";
+      }
+
       if (inputs.was_pressed(SDL_SCANCODE_SPACE) && collision_proc.debug) {
-        for (auto entity : entities) {
-          entity->print_state();
+        for (int idx = 0; idx < entities.size(); idx++) {
+          entities[idx].print_state();
           print_manifold = true;
         }
       }
@@ -157,9 +163,9 @@ int main(int argc, char** argv) {
     }
     
     // Draw all entities
-      for (int entity_idx = 0; entity_idx < entities.size(); entity_idx++) {
-      std::cout << "Adding " << entities[entity_idx]->name << " to queue.\n";
-      graphics.add_to_queue(*entities[entity_idx]);
+      for (int idx = 0; idx < entities.size(); idx++) {
+      // std::cout << "Adding " << entities[idx].name << " to queue.\n";
+      graphics.add_to_queue(entities[idx]);
     }
 
     graphics.draw_queue(SDL_GetTicks());
