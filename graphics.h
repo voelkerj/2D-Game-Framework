@@ -137,10 +137,7 @@ void Graphics::draw_queue(Uint32 current_ticks) {
 void Graphics::draw_entity(Uint32 current_ticks, Entity &entity) {
   // Note scale updated in draw_queue function above
 
-  // If entity is within the camera bounds
-  entity.calculate_vertices();
-  entity.calculate_vertices_in_WCS();
-
+  // Check if entity is within the camera bounds
   bool inFOV{false};
 
   for (Point pt : entity.vertices_WCS) {
@@ -248,8 +245,6 @@ Point Graphics::convert_screen_coords_to_world_coords(Point screen_pt) {
 
   world_pt.x = (screen_pt.x / scale_x) + current_camera.pos_x - (current_camera.FOV_width / 2);
   world_pt.y = (((window_height - screen_pt.y) / scale_y) + current_camera.pos_y - (current_camera.FOV_height / 2));
-
-  std::cout << world_pt.x << ", " << world_pt.y << "\n";
 
   return world_pt;
 }

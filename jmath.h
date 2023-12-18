@@ -5,13 +5,13 @@
 #include "geometry.h"
 
 namespace jmath {
-Point furthest_point(Entity* entity, Vector2& d) {
+Point furthest_point(std::vector<Point> vertices_WCS_entity, Vector2& d) {
   Point point;
 
   float highest_dot = -std::numeric_limits<float>::max();
 
-  for (int i = 0; i < entity->vertices_WCS.size(); i++) {
-    Vector2 entity_vertex(entity->vertices_WCS[i]);
+  for (int i = 0; i < vertices_WCS_entity.size(); i++) {
+    Vector2 entity_vertex(vertices_WCS_entity[i]);
     float dot = d.dot(entity_vertex);
 
     if (dot > highest_dot) {
@@ -24,12 +24,12 @@ Point furthest_point(Entity* entity, Vector2& d) {
   return point;
 }
 
-Vector2 support(Entity* A, Entity* B, Vector2& d) {
+Vector2 support(std::vector<Point> vertices_wcs_a, std::vector<Point> vertices_wcs_b, Vector2& d) {
   Vector2 d_inv = d * -1;
 
-  Point pt_two = furthest_point(B, d_inv);
+  Point pt_two = furthest_point(vertices_wcs_b, d_inv);
 
-  return furthest_point(A, d) - pt_two;
+  return furthest_point(vertices_wcs_a, d) - pt_two;
 }
 
 Vector2 triple_product(Vector2& a, Vector2& b, Vector2& c) {

@@ -1,5 +1,4 @@
 #include "../framework_main.h"
-#include <memory>
 
 int main(int argc, char** argv) {
 
@@ -24,10 +23,6 @@ int main(int argc, char** argv) {
   // State initial_state;
   std::string sprite_path = base_path + "..\\resources\\block.png";
 
-  // Entity block("test_block", box, initial_state, 4, 4, sprite_path, graphics.renderer);
-  // block.animations["idle"] = block_idle;
-  // block.current_animation = "idle";
-
   std::vector<Entity> entities;
 
   bool print_manifold = false;
@@ -35,13 +30,20 @@ int main(int argc, char** argv) {
   // Frame Loop
   Uint32 previous_ticks{0};
   while (true) {
+    // START FRAME
     frameManager.start_frame();
     inputs.start_frame();
     graphics.clear_screen();
     graphics.clear_queue();
 
-    // collision_proc.evaluate_collisions(entities);
-    // collision_proc.prune_resolved_collisions();
+    // Update Entity Coordinates
+    for (int idx = 0; idx < entities.size(); idx++) {
+      entities[idx].calculate_vertices();
+      entities[idx].calculate_vertices_in_WCS();
+    }
+
+    collision_proc.evaluate_collisions(entities);
+    collision_proc.prune_resolved_collisions();
 
     // Handle Keyboard and Close Button
     if (SDL_PollEvent(&event)) {
@@ -79,11 +81,6 @@ int main(int argc, char** argv) {
         new_entity_state.pos_x = mouse_WCS.x;
         new_entity_state.pos_y = mouse_WCS.y;
 
-        // Entity new_entity(box, new_entity_state, 1, 1, sprite_path, graphics.renderer);
-
-        // new_entity.animations["idle"] = block_idle;
-        // new_entity.current_animation = "idle";
-
         entities.emplace_back(box, new_entity_state, 1, 1, sprite_path, graphics.renderer);
         entities.back().animations["idle"] = block_idle;
         entities.back().current_animation = "idle";
@@ -108,7 +105,8 @@ int main(int argc, char** argv) {
       }
 
       if (inputs.was_pressed(SDL_SCANCODE_C)) {
-        std::cout << "Camera: " << graphics.current_camera.pos_x << ", " << graphics.current_camera.pos_y << "\n";
+        std::cout << "Camera: " << graphics.current_camera.pos_x << ", "
+                  << graphics.current_camera.pos_y << "\n";
       }
 
       if (inputs.was_pressed(SDL_SCANCODE_SPACE) && collision_proc.debug) {
@@ -134,13 +132,14 @@ int main(int argc, char** argv) {
     }
 
     if (collision_proc.debug) {
-      for (auto&& collision : collision_proc.active_collisions_) {
-        if (collision->manifold_.size() > 0) {
+      // For each collision
+      for (int idx = 0; idx < collision_proc.active_collisions_.size(); idx++) {
+        if (collision_proc.active_collisions_[idx].manifold_.size() > 0) {
 
           if (print_manifold)
             std::cout << "Manifold Points: ";
 
-          for (auto pt : collision->manifold_) {
+          for (auto pt : collision_proc.active_collisions_[idx].manifold_) {
             if (print_manifold)
               std::cout << "(" << pt.x << ", " << pt.y << "), ";
 
@@ -150,21 +149,20 @@ int main(int argc, char** argv) {
         }
 
         // Draw any lines this collison needs drawn
-        if (collision->debug_) {
-          for (int idx = 0; idx < collision->lines_to_draw_.size(); idx++) {
-            graphics.add_to_queue(collision->lines_to_draw_[idx].first,
-                                  collision->lines_to_draw_[idx].second);
-          }
-        }
+        // if (collision_proc.active_collisions_[idx].debug_) {
+        //   for (int idx = 0; idx < collision_proc.active_collisions_[idx].lines_to_draw_.size(); idx++) {
+        //     graphics.add_to_queue(collision_proc.active_collisions_[idx].lines_to_draw_[idx].first,
+        //                           collision_proc.active_collisions_[idx].lines_to_draw_[idx].second);
+        //   }
+        // }
       }
       if (print_manifold) {
         print_manifold = false;
       }
     }
-    
+
     // Draw all entities
-      for (int idx = 0; idx < entities.size(); idx++) {
-      // std::cout << "Adding " << entities[idx].name << " to queue.\n";
+    for (int idx = 0; idx < entities.size(); idx++) {
       graphics.add_to_queue(entities[idx]);
     }
 
