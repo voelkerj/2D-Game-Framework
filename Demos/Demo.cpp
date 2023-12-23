@@ -145,7 +145,8 @@ int main(int argc, char** argv) {
 
             graphics.add_to_queue(pt);
           }
-          std::cout << "\n";
+          if (print_manifold)
+            std::cout << "\n";
         }
 
         // Draw any lines this collison needs drawn

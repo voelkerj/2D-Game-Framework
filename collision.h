@@ -383,8 +383,10 @@ void CollisionProcessor::find_or_create_collision(Entity& A, Entity& B) {
           (B.name == active_collisions_[idx].name_A ||
            B.name == active_collisions_[idx].name_B)) {
 
-        // We have already noted this collision, just update it with a new simplex
+        // We have already noted this collision, just update it
         new_collision = false;
+        active_collisions_[idx].vertices_WCS_A = A.vertices_WCS;
+        active_collisions_[idx].vertices_WCS_B = B.vertices_WCS;
         active_collisions_[idx].update(simplex_);
         active_collisions_[idx].debug_ = debug;  // Update debug state
       }
