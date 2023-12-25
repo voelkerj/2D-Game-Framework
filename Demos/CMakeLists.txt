@@ -1,14 +1,14 @@
 cmake_minimum_required(VERSION 3.10)
 
 # Tablet Paths
-#set(SDL2_DIR "C:/Users/johnw/Libraries/SDL2-2.28.3")
-#set(SDL2_image_DIR "C:/Users/johnw/Libraries/SDL2_image-2.6.3")
-# set(SDL2_ttf_DIR "C:/Libraries/SDL2_ttf-2.20.2")
+set(SDL2_DIR "C:/Users/johnw/Libraries/SDL2-2.28.3")
+set(SDL2_image_DIR "C:/Users/johnw/Libraries/SDL2_image-2.6.3")
+#set(SDL2_ttf_DIR "C:/Libraries/SDL2_ttf-2.20.2")
 
 # PC Paths
-set(SDL2_DIR "C:/Libraries/SDL2-2.26.2")
-set(SDL2_image_DIR "C:/Libraries/SDL2_image-2.6.2")
-# set(SDL2_ttf_DIR "C:/Libraries/SDL2_ttf-2.20.2")
+#set(SDL2_DIR "C:/Libraries/SDL2-2.26.2")
+#set(SDL2_image_DIR "C:/Libraries/SDL2_image-2.6.2")
+#set(SDL2_ttf_DIR "C:/Libraries/SDL2_ttf-2.20.2")
 
 set(SDL2_INCLUDE_DIRS "${SDL2_DIR}/x86_64-w64-mingw32/include/SDL2")
 set(SDL2_LIBRARIES "${SDL2_DIR}/x86_64-w64-mingw32/lib/libSDL2main.a;${SDL2_DIR}/x86_64-w64-mingw32/lib/libSDL2.dll.a")
