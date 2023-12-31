@@ -1,0 +1,31 @@
+Entities
+add float friction member
+add inverse mass member
+
+Collision
+add float friction member
+friction = sqrt(A.friction * B.friction)
+consider instead of storing two entity names, create a "key" variable using the names
+
+Do I need something like a "contact" class?
+-seems like this is needed for warm starting
+
+Box2d-lite Main Loop
+1) Setup new ImGui frame
+2) Draw all text
+3) world.step 
+ 3a) if dt is positive, calculate inverse time
+ 3b) Broadphase
+ 3c) Integrate bodies velocity and angular velocity
+  3c1) If body has inverse mass of 0, then do not integrate
+ 3d) Loop through all arbiters (collisions)
+  3d1) Pre-step
+        - Loop through each contact
+         - Calculate a bunch of intermediate variables
+ 3e) Loop through all joints
+  3e1) Pre-step 
+        - Calculate a bunch of intermediate variables
+ 3f) Perform iterations (const of 10 in main.cpp)
+  3f1) Loop through each arbiter, apply impulse
+        - For each contact
+  3f2) Loop through each joint, apply impulse
