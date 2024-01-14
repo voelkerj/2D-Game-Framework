@@ -17,6 +17,8 @@ class Entity {
   float size_x;
   float size_y;
   float mass{0};
+  float invMass{0};
+  float friction{0.25};
   State state;
   std::map<std::string, Animation> animations;
   std::string current_animation;
@@ -52,6 +54,8 @@ Entity& Entity::operator=(Entity entity) {
   size_x = entity.size_x;
   size_y = entity.size_y;
   mass = entity.mass;
+  invMass = entity.invMass;
+  friction = entity.friction;
   state = entity.state;
   animations = entity.animations;
   current_animation = entity.current_animation;
@@ -61,7 +65,7 @@ Entity& Entity::operator=(Entity entity) {
   vertices = entity.vertices;
   vertices_WCS = entity.vertices_WCS;
   name = entity.name;
-  std::cout << "Copy Assignment " << &entity << " (" << entity.name << ") " << "to " << this << " (" << name << ")" << "\n";
+  // std::cout << "Copy Assignment " << &entity << " (" << entity.name << ") " << "to " << this << " (" << name << ")" << "\n";
 
   return *this;
 }
@@ -70,6 +74,8 @@ Entity::Entity(const Entity &entity) {
   size_x = entity.size_x;
   size_y = entity.size_y;
   mass = entity.mass;
+  invMass = entity.invMass;
+  friction = entity.friction;
   state = entity.state;
   animations = entity.animations;
   current_animation = entity.current_animation;

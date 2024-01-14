@@ -1,11 +1,10 @@
 Entities
-add float friction member
-add inverse mass member
+[x] add float friction member
+[x] add inverse mass member
 
 Collision
-add float friction member
-friction = sqrt(A.friction * B.friction)
-consider instead of storing two entity names, create a "key" variable using the names
+[x] add float friction member
+    friction = sqrt(A.friction * B.friction)
 
 Do I need something like a "contact" class?
 -seems like this is needed for warm starting
@@ -28,4 +27,15 @@ Box2d-lite Main Loop
  3f) Perform iterations (const of 10 in main.cpp)
   3f1) Loop through each arbiter, apply impulse
         - For each contact
+         - Calculate r1, r2, relative velocity (normal), normal impulse
+         - Check if accumulation is on, do different clamping depending on answer
+         - Apply impulse to contact
+         - Calculate velocities and angular velocities of bodies
+         - Calculate relative velocity (tangent), tangent impulse
+         - Check if accumulation is on, do different clamping depending on answer
+         - Calculate velocities and angular velocities of bodies
   3f2) Loop through each joint, apply impulse
+        - Calculate relative velocity
+        - Calculate and apply impulse
+ 3g) Calculate new position of each body using timestep and velocity
+4) Draw all bodies, contacts, etc.

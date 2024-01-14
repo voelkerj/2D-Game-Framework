@@ -22,10 +22,11 @@ class Collision {
   std::vector<float>depth_; // Depth of the collision for each point in the manifold
   Vector2 normal_;  // Collision normal
   std::vector<Point> manifold_;
+  float friction_;
   bool resolved_;
   std::vector<std::pair<Point, Point>> lines_to_draw_;
 
-  Collision(std::vector<Point> vertices_wcs_a, std::vector<Point> vertices_wcs_b, std::string name_a, std::string name_b, Vector2 simplex[3], bool debug_);
+  Collision(std::vector<Point> vertices_wcs_a, std::vector<Point> vertices_wcs_b, std::string name_a, std::string name_b, Vector2 simplex[3], float friction_a, float friction_b, bool debug_);
   // Collision(const Collision& collision);
   // Collision& operator=(const Collision& collision);
 
@@ -38,12 +39,14 @@ class Collision {
   void update(Vector2 simplex[3]);
 };
 
-Collision::Collision(std::vector<Point> vertices_wcs_a, std::vector<Point> vertices_wcs_b, std::string name_a, std::string name_b, Vector2 simplex[3], bool debug) {
+Collision::Collision(std::vector<Point> vertices_wcs_a, std::vector<Point> vertices_wcs_b, std::string name_a, std::string name_b, Vector2 simplex[3], float friction_a, float friction_b, bool debug) {
   vertices_WCS_A = vertices_wcs_a;
   vertices_WCS_B = vertices_wcs_b;
 
   name_A = name_a;
   name_B = name_b;
+
+  friction_ = sqrt(friction_a * friction_b); // real deal physics
 
   debug = debug_;
 
@@ -372,7 +375,7 @@ void CollisionProcessor::find_or_create_collision(Entity& A, Entity& B) {
   if (active_collisions_.empty()) {
     // Create new collision
     std::cout << "1. New Collision between " << A.name << " and " << B.name << "\n";
-    active_collisions_.emplace_back(A.vertices_WCS, B.vertices_WCS, A.name, B.name, simplex_, debug);
+    active_collisions_.emplace_back(A.vertices_WCS, B.vertices_WCS, A.name, B.name, simplex_, A.friction, B.friction, debug);
   } else {
     bool new_collision{true};
 
@@ -396,7 +399,7 @@ void CollisionProcessor::find_or_create_collision(Entity& A, Entity& B) {
     if (new_collision) {
       std::cout << "2. New Collision between " << A.name << " and " << B.name << "\n";
       // Create new collision
-      active_collisions_.emplace_back(A.vertices_WCS, B.vertices_WCS, A.name, B.name, simplex_, debug);
+      active_collisions_.emplace_back(A.vertices_WCS, B.vertices_WCS, A.name, B.name, simplex_, A.friction, B.friction, debug);
     }
   }
 }

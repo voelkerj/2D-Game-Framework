@@ -1,3 +1,4 @@
+:: This script is meant to be run from within the Demos folder
 if exist build\ (
 rmdir /s /q build
 )
