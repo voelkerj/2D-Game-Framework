@@ -3,6 +3,7 @@
 
 #include "SDL.h"
 #include "entity.h"
+#include "EntityRegister.h"
 
 #include <vector>
 
@@ -20,37 +21,42 @@ struct Camera {
 
 class Graphics {
  public:
-  std::vector<Entity> entity_queue;
-  std::vector<std::pair<Point, Point>> line_queue;
-  std::vector<Vector2> vector_queue;
-  std::vector<Point> point_queue;
   SDL_Window* window;
   int window_width;
   int window_height;
+
   SDL_Renderer* renderer;
+
   Camera current_camera;
+
   float scale_x;
   float scale_y;
+
   bool debug{false};
 
   Graphics();
   ~Graphics();
 
-  void add_to_queue(Entity entity);
-  void draw_queue(Uint32 current_ticks);
-  void clear_queue();
-
+  void add_to_queue(Entity& entity);
   void add_to_queue(Point a, Point b);
   void add_to_queue(Point a);
+
+  void draw_queue(Uint32 current_ticks);
+  void clear_queue();
 
   void clear_screen();
 
   Point convert_screen_coords_to_world_coords(Point screen_pt);
 
  private:
+  EntityRegister entity_queue;
+  std::vector<std::pair<Point, Point>> line_queue;
+  std::vector<Vector2> vector_queue;
+  std::vector<Point> point_queue;
+
   float debug_grid_size{1};
 
-  void draw_entity(Uint32 current_ticks, Entity& entity);
+  void draw_entity(Uint32 current_ticks, Entity* entity);
   void draw_line(Point a, Point b, int color[4]);
   void draw_point(Point a);
   bool point_within_camera_view(float x, float y);
@@ -83,8 +89,8 @@ Graphics::~Graphics() {
   SDL_DestroyWindow(window);
 }
 
-void Graphics::add_to_queue(Entity entity) {
-  entity_queue.push_back(entity);
+void Graphics::add_to_queue(Entity& entity) {
+  entity_queue.register_entity(entity);
 }
 
 void Graphics::add_to_queue(Point a, Point b) {
@@ -134,37 +140,37 @@ void Graphics::draw_queue(Uint32 current_ticks) {
   SDL_RenderPresent(renderer);
 }
 
-void Graphics::draw_entity(Uint32 current_ticks, Entity &entity) {
+void Graphics::draw_entity(Uint32 current_ticks, Entity* entity) {
   // Note scale updated in draw_queue function above
 
   // Check if entity is within the camera bounds
   bool inFOV{false};
 
-  for (Point pt : entity.vertices_WCS) {
+  for (Point pt : entity->vertices_WCS) {
     if (point_within_camera_view(pt.x, pt.y))
       inFOV = true;
   }
 
   if (inFOV) {
     // Draw Entity
-    Animation animation = entity.animations[entity.current_animation];
+    Animation animation = entity->animations[entity->current_animation];
 
     SDL_Rect clipping_rect = animation.get_frame(current_ticks);
 
     SDL_Rect destination_rect;
-    destination_rect.x = (entity.state.pos_x - entity.size_x / 2 -
+    destination_rect.x = (entity->state.pos_x - entity->size_x / 2 -
                           (current_camera.pos_x - (current_camera.FOV_width / 2))) *
                          scale_x;
     destination_rect.y = window_height -
-                         (entity.state.pos_y - entity.size_y / 2 -
+                         (entity->state.pos_y - entity->size_y / 2 -
                           (current_camera.pos_y - (current_camera.FOV_height / 2))) *
                              scale_y -
-                         (entity.size_y * scale_y);
-    destination_rect.h = entity.size_y * scale_y;
-    destination_rect.w = entity.size_x * scale_x;
+                         (entity->size_y * scale_y);
+    destination_rect.h = entity->size_y * scale_y;
+    destination_rect.w = entity->size_x * scale_x;
 
-    SDL_RenderCopyEx(renderer, entity.sprite_sheet, &clipping_rect, &destination_rect,
-                     -entity.state.angle, NULL, SDL_FLIP_NONE);
+    SDL_RenderCopyEx(renderer, entity->sprite_sheet, &clipping_rect, &destination_rect,
+                     -entity->state.angle, NULL, SDL_FLIP_NONE);
 
     // Draw Vertices
     if (debug) {
@@ -176,14 +182,14 @@ void Graphics::draw_entity(Uint32 current_ticks, Entity &entity) {
       // }
 
       // Display entity vertices
-      for (Point point : entity.vertices_WCS) {
+      for (Point point : entity->vertices_WCS) {
         SDL_SetRenderDrawColor(renderer, 0x48, 0xff, 0x82, 0xFF);
         float pt_x = (point.x - (current_camera.pos_x - (current_camera.FOV_width / 2))) * scale_x;
         float pt_y =
             window_height -
-            (point.y - entity.size_y - (current_camera.pos_y - (current_camera.FOV_height / 2))) *
+            (point.y - entity->size_y - (current_camera.pos_y - (current_camera.FOV_height / 2))) *
                 scale_y -
-            (entity.size_y * scale_y);
+            (entity->size_y * scale_y);
 
         SDL_RenderDrawPoint(renderer, pt_x, pt_y);
       }
