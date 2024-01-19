@@ -2,6 +2,7 @@
 #define COLLISION_H
 
 #include "entity.h"
+#include "EntityRegister.h"
 #include "geometry.h"
 #include "jmath.h"
 
@@ -10,11 +11,8 @@
 
 class Collision {
  public:
-  std::vector<Point> vertices_WCS_A;
-  std::vector<Point> vertices_WCS_B;
-
-  std::string name_A;
-  std::string name_B;
+  Entity* A;
+  Entity* B;
 
   bool debug_{false};
 
@@ -26,7 +24,7 @@ class Collision {
   bool resolved_;
   std::vector<std::pair<Point, Point>> lines_to_draw_;
 
-  Collision(std::vector<Point> vertices_wcs_a, std::vector<Point> vertices_wcs_b, std::string name_a, std::string name_b, Vector2 simplex[3], float friction_a, float friction_b, bool debug_);
+  Collision(Entity* A, Entity* B, Vector2 simplex[3]);
   // Collision(const Collision& collision);
   // Collision& operator=(const Collision& collision);
 
@@ -39,16 +37,11 @@ class Collision {
   void update(Vector2 simplex[3]);
 };
 
-Collision::Collision(std::vector<Point> vertices_wcs_a, std::vector<Point> vertices_wcs_b, std::string name_a, std::string name_b, Vector2 simplex[3], float friction_a, float friction_b, bool debug) {
-  vertices_WCS_A = vertices_wcs_a;
-  vertices_WCS_B = vertices_wcs_b;
+Collision::Collision(Entity* A_in, Entity* B_in, Vector2 simplex[3]) {
+  A = A_in;
+  B = B_in;
 
-  name_A = name_a;
-  name_B = name_b;
-
-  friction_ = sqrt(friction_a * friction_b); // real deal physics
-
-  debug = debug_;
+  friction_ = sqrt(A->friction * B->friction); // dis some real deal physics
 
   resolved_ = false;
 
@@ -93,7 +86,7 @@ void Collision::EPA() {
     Edge e = FindClosestEdge(polygon);
 
     // Get support vector along edge normal
-    Vector2 p = jmath::support(vertices_WCS_A, vertices_WCS_B, e.normal);
+    Vector2 p = jmath::support(A->vertices_WCS, B->vertices_WCS, e.normal);
 
     // Dot product support vector with normal
     float d = p.dot(e.normal);
@@ -165,9 +158,9 @@ void Collision::FindCollisionManifold() {
   // Adapted from: https://dyn4j.org/2011/11/contact-points-using-clipping/
 
   // Find relevant edges
-  Edge e1 = FindRelevantEdge(vertices_WCS_A, true);
+  Edge e1 = FindRelevantEdge(A->vertices_WCS, true);
   Vector2 e1_vect(e1.v1, e1.v2);
-  Edge e2 = FindRelevantEdge(vertices_WCS_B, false);
+  Edge e2 = FindRelevantEdge(B->vertices_WCS, false);
   Vector2 e2_vect(e2.v1, e2.v2);
 
   // Determine reference and incident edge
@@ -317,8 +310,8 @@ class CollisionProcessor {
   Vector2 simplex_[3];
   bool debug{false};
 
-  void evaluate_collisions(std::vector<Entity>& entities);
-  void find_or_create_collision(Entity& A, Entity& B);
+  void evaluate_collisions();
+  void find_or_create_collision(Entity* A, Entity* B);
   void prune_resolved_collisions();
 
   CollisionProcessor(){};
@@ -327,13 +320,15 @@ class CollisionProcessor {
   CollisionProcessor& operator=(const CollisionProcessor& collisionprocessor);
 
   // Broadphase
-  std::vector<std::pair<Entity&, Entity&>> brute_force(std::vector<Entity>& entities);
-  bool AABB_overlap(Entity& A, Entity& B);
+  std::vector<EntityPair> brute_force();
+  bool AABB_overlap(Entity* A, Entity* B);
 
   // Narrowphase
   bool GJK(std::vector<Point> vertices_WCS_A, std::vector<Point> vertices_WCS_B);
 
   // void reset_collisions(std::vector<Entity*> entities);
+
+  EntityRegister entities;
 };
 
 CollisionProcessor& CollisionProcessor::operator=(const CollisionProcessor& collisionprocessor) {
@@ -358,48 +353,53 @@ CollisionProcessor::CollisionProcessor(const CollisionProcessor& collisionproces
   std::cout << "Copying collision processor\n";
 }
 
-void CollisionProcessor::evaluate_collisions(std::vector<Entity>& entities) {
+void CollisionProcessor::evaluate_collisions() {
 
-  std::vector<std::pair<Entity&, Entity&>> pairs = brute_force(entities);
+  std::vector<EntityPair> pairs = brute_force();
 
   // For each pair
   for (int idx = 0; idx < pairs.size(); idx++) {
-    if (GJK(pairs[idx].first.vertices_WCS, pairs[idx].second.vertices_WCS)) {
-      find_or_create_collision(pairs[idx].first, pairs[idx].second);
+    if (GJK(pairs[idx].A->vertices_WCS, pairs[idx].B->vertices_WCS)) {
+      find_or_create_collision(pairs[idx].A, pairs[idx].B);
     }
   }
 }
 
-void CollisionProcessor::find_or_create_collision(Entity& A, Entity& B) {
+void CollisionProcessor::find_or_create_collision(Entity* A, Entity* B) {
   // if the active collisions vector is empty
   if (active_collisions_.empty()) {
+
     // Create new collision
-    std::cout << "1. New Collision between " << A.name << " and " << B.name << "\n";
-    active_collisions_.emplace_back(A.vertices_WCS, B.vertices_WCS, A.name, B.name, simplex_, A.friction, B.friction, debug);
+    std::cout << "1. New Collision between " << A << " and " << B << "\n";
+    Collision collision(A, B, simplex_);
+    active_collisions_.push_back(collision);
+
   } else {
+
     bool new_collision{true};
 
     for (int idx = 0; idx < active_collisions_.size(); idx++) {
       // if entity names match entities involved in an active collision
-      if ((A.name == active_collisions_[idx].name_A ||
-           A.name == active_collisions_[idx].name_B) &&
-          (B.name == active_collisions_[idx].name_A ||
-           B.name == active_collisions_[idx].name_B)) {
+      if ((A == active_collisions_[idx].A ||
+           A == active_collisions_[idx].B) &&
+          (B == active_collisions_[idx].A ||
+           B == active_collisions_[idx].B)) {
 
         // We have already noted this collision, just update it
         new_collision = false;
-        active_collisions_[idx].vertices_WCS_A = A.vertices_WCS;
-        active_collisions_[idx].vertices_WCS_B = B.vertices_WCS;
+        active_collisions_[idx].A = A;
+        active_collisions_[idx].B = B;
         active_collisions_[idx].update(simplex_);
         active_collisions_[idx].debug_ = debug;  // Update debug state
       }
     }
 
-    // If after checking all exisitng collisions, this is still a new collision
+    // If after checking all existing collisions, this is still a new collision
     if (new_collision) {
-      std::cout << "2. New Collision between " << A.name << " and " << B.name << "\n";
+      std::cout << "2. New Collision between " << A << " and " << B << "\n";
       // Create new collision
-      active_collisions_.emplace_back(A.vertices_WCS, B.vertices_WCS, A.name, B.name, simplex_, A.friction, B.friction, debug);
+      Collision collision(A, B, simplex_);
+      active_collisions_.push_back(collision);
     }
   }
 }
@@ -415,26 +415,29 @@ void CollisionProcessor::prune_resolved_collisions() {
   }
 }
 
-std::vector<std::pair<Entity&, Entity&>> CollisionProcessor::brute_force(
-    std::vector<Entity>& entities) {
-  std::vector<std::pair<Entity&, Entity&>> pairs;
+std::vector<EntityPair> CollisionProcessor::brute_force() {
+  std::vector<EntityPair> pairs;
 
   for (int i = 0; i < entities.size(); i++) {
     for (int j = i + 1; j < entities.size(); j++) {
       if (AABB_overlap(entities[i], entities[j])) {
-        pairs.emplace_back(entities[i], entities[j]);
+        EntityPair entity_pair;
+        entity_pair.A = entities[i];
+        entity_pair.B = entities[j];
+
+        pairs.push_back(entity_pair);
       }
     }
   }
   return pairs;
 }
 
-bool CollisionProcessor::AABB_overlap(Entity& A, Entity& B) {
+bool CollisionProcessor::AABB_overlap(Entity* A, Entity* B) {
  // Used to quickly eliminate shapes that are guaranteed to not overlap
-  float d1x = B.get_min_x_WCS() - A.get_max_x_WCS();
-  float d1y = B.get_min_y_WCS() - A.get_max_y_WCS();
-  float d2x = A.get_min_x_WCS() - B.get_max_x_WCS();
-  float d2y = A.get_min_y_WCS() - B.get_max_y_WCS();
+  float d1x = B->get_min_x_WCS() - A->get_max_x_WCS();
+  float d1y = B->get_min_y_WCS() - A->get_max_y_WCS();
+  float d2x = A->get_min_x_WCS() - B->get_max_x_WCS();
+  float d2y = A->get_min_y_WCS() - B->get_max_y_WCS();
 
   if (d1x > 0.0f || d1y > 0.0f)
     return false;

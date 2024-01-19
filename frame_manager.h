@@ -7,7 +7,7 @@ class FrameManager {
  public:
   Uint32 frame_start_ticks;
   Uint32 frame_end_ticks;
-  int fps;
+  int fps{60};
 
   FrameManager(){};
   ~FrameManager(){};

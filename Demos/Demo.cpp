@@ -1,55 +1,55 @@
 #include "../framework_main.h"
 
+#include <list>
+
 int main(int argc, char** argv) {
 
+  // Start SDL
   SDL_Init(SDL_INIT_VIDEO);
   std::string base_path = SDL_GetBasePath();
-
-  Graphics graphics;
-
-  FrameManager frameManager;
-  frameManager.fps = 60;
-
-  InputHandler inputs;
-
   SDL_Event event;
 
+  // Initialize Framework Governing Classes
+  FrameManager frameManager;
+  Graphics graphics;
   CollisionProcessor collision_proc;
+  InputHandler inputs;
 
-  // Entities
+  // Debug
+  bool print_manifold = false;
+
+  // Set up block animation and sprite path
   Animation block_idle;
   block_idle.add_frame(0, 0, 64, 16);
-
-  // State initial_state;
   std::string sprite_path = base_path + "..\\resources\\block.png";
 
-  std::vector<Entity> entities;
-
-  bool print_manifold = false;
+  // Set up entities list and iterator
+  std::list<Entity> entities;
+  std::list<Entity>::iterator entity;
 
   // Frame Loop
   Uint32 previous_ticks{0};
+
   while (true) {
-    // START FRAME
+    // Start Frame
     frameManager.start_frame();
     inputs.start_frame();
-    graphics.clear_screen();
-    graphics.clear_queue();
+    graphics.start_frame();
 
     // Update Entity Coordinates
-    for (int idx = 0; idx < entities.size(); idx++) {
-      entities[idx].calculate_vertices();
-      entities[idx].calculate_vertices_in_WCS();
+    for (entity = entities.begin(); entity != entities.end(); ++entity) {
+      entity->calculate_vertices();
+      entity->calculate_vertices_in_WCS();
     }
 
-    collision_proc.evaluate_collisions(entities);
+    collision_proc.evaluate_collisions();
     collision_proc.prune_resolved_collisions();
 
     // Handle Keyboard and Close Button
     if (SDL_PollEvent(&event)) {
       // Windows close
       if (event.type == SDL_QUIT)
-        return 0;
+        break;
 
       // General Keyboard Event
       if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP)
@@ -59,7 +59,7 @@ int main(int argc, char** argv) {
 
       // Escape closes demo
       if (inputs.was_pressed(SDL_SCANCODE_ESCAPE))
-        return 0;
+        break;
 
       if (inputs.is_held(SDL_SCANCODE_UP) || inputs.was_pressed(SDL_SCANCODE_UP)) {
         graphics.current_camera.pos_y += 0.2;
@@ -73,17 +73,21 @@ int main(int argc, char** argv) {
       if (inputs.is_held(SDL_SCANCODE_RIGHT) || inputs.was_pressed(SDL_SCANCODE_RIGHT)) {
         graphics.current_camera.pos_x += 0.2;
       }
-
+ 
       if (inputs.left_click) {
+        // Create new entity at location
         Point mouse_WCS = graphics.convert_screen_coords_to_world_coords(inputs.mouse_coords);
-
+ 
         State new_entity_state;
         new_entity_state.pos_x = mouse_WCS.x;
         new_entity_state.pos_y = mouse_WCS.y;
 
-        entities.emplace_back(box, new_entity_state, 1, 1, sprite_path, graphics.renderer);
-        entities.back().animations["idle"] = block_idle;
-        entities.back().current_animation = "idle";
+        Entity new_entity(box, new_entity_state, 1, 1, sprite_path, graphics.renderer);
+
+        new_entity.animations["idle"] = block_idle;
+        new_entity.current_animation = "idle";
+
+        entities.push_back(new_entity);
       }
 
       if (inputs.is_held(SDL_SCANCODE_M))
@@ -104,31 +108,18 @@ int main(int argc, char** argv) {
           graphics.debug = true;
       }
 
-      if (inputs.was_pressed(SDL_SCANCODE_C)) {
-        std::cout << "Camera: " << graphics.current_camera.pos_x << ", "
-                  << graphics.current_camera.pos_y << "\n";
-      }
+      // if (inputs.was_pressed(SDL_SCANCODE_C)) {
+      //   std::cout << "Camera: " << graphics.current_camera.pos_x << ", "
+      //             << graphics.current_camera.pos_y << "\n";
+      // }
 
-      if (inputs.was_pressed(SDL_SCANCODE_SPACE) && collision_proc.debug) {
-        for (int idx = 0; idx < entities.size(); idx++) {
-          entities[idx].print_state();
-          print_manifold = true;
-        }
-      }
-    }
+      // if (inputs.was_pressed(SDL_SCANCODE_SPACE) && collision_proc.debug) {
 
-    if (graphics.debug) {
-      // Draw origin
-      Point origin(0, 0);
-      Point right(.5, 0);
-      Point left(-.5, 0);
-      Point up(0, .5);
-      Point down(0, -.5);
-
-      graphics.add_to_queue(origin, right);
-      graphics.add_to_queue(origin, left);
-      graphics.add_to_queue(origin, up);
-      graphics.add_to_queue(origin, down);
+      //   for (entity = entities.begin(); entity != entities.end(); ++entity) {
+      //     entity->print_state();
+      //     print_manifold = true;
+      //   }
+      // }
     }
 
     if (collision_proc.debug) {
@@ -162,9 +153,12 @@ int main(int argc, char** argv) {
       }
     }
 
-    // Draw all entities
-    for (int idx = 0; idx < entities.size(); idx++) {
-      graphics.add_to_queue(entities[idx]);
+    // Draw all entities, add all entities to collison queue
+    for (entity = entities.begin(); entity != entities.end(); ++entity) {
+      if (!collision_proc.entities.check_in_registry(*entity))
+        collision_proc.entities.register_entity(*entity);
+
+      graphics.add_to_queue(*entity);
     }
 
     graphics.draw_queue(SDL_GetTicks());

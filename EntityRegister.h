@@ -11,8 +11,6 @@ class Entity;
 // Entity Processor class
 class EntityRegister {
  public:
-  std::vector<Entity*> Entities;
-
   void register_entity(Entity& entity);
   bool check_in_registry(Entity& entity);
   void unregister_entity(Entity& entity);
@@ -23,6 +21,9 @@ class EntityRegister {
   Entity* operator[](int n);
 
   void print_registry();
+
+ private:
+  std::vector<Entity*> Entities;
 };
 
 void EntityRegister::register_entity(Entity& entity) {

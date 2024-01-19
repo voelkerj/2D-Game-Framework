@@ -46,6 +46,8 @@ class Graphics {
 
   void clear_screen();
 
+  void start_frame();
+
   Point convert_screen_coords_to_world_coords(Point screen_pt);
 
  private:
@@ -61,6 +63,7 @@ class Graphics {
   void draw_point(Point a);
   bool point_within_camera_view(float x, float y);
   void draw_grid();
+  void draw_origin();
   void update_scale();
 };
 
@@ -118,6 +121,7 @@ void Graphics::draw_queue(Uint32 current_ticks) {
 
   if (debug) {
     draw_grid();
+    draw_origin();
   }
 
   // Draw Entities
@@ -244,6 +248,11 @@ void Graphics::clear_screen() {
   SDL_RenderClear(renderer);
 }
 
+void Graphics::start_frame() {
+  clear_screen();
+  clear_queue();
+}
+
 Point Graphics::convert_screen_coords_to_world_coords(Point screen_pt) {
   update_scale();
 
@@ -279,6 +288,21 @@ void Graphics::draw_grid() {
     Point end(lines_xmax, lines_ymin + (idx * debug_grid_size));
     draw_line(start, end, color);
   }
+}
+
+void Graphics::draw_origin() {
+  int color[4] = {0, 255, 0, 255};
+
+  Point origin(0, 0);
+  Point right(.5, 0);
+  Point left(-.5, 0);
+  Point up(0, .5);
+  Point down(0, -.5);
+
+  draw_line(origin, right, color);
+  draw_line(origin, left, color);
+  draw_line(origin, up, color);
+  draw_line(origin, down, color);
 }
 
 void Graphics::update_scale() {

@@ -282,4 +282,9 @@ float Entity::get_max_y_WCS() {
   return max_y;
 }
 
+struct EntityPair {
+  Entity* A;
+  Entity* B;
+};
+
 #endif
