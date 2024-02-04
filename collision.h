@@ -8,6 +8,14 @@
 
 #include <vector>
 #include <memory>
+#include <algorithm>
+
+struct Contact {
+  Point position;
+  float mass_normal;
+  float mass_tangent;
+  float bias;
+};
 
 class Collision {
  public:
@@ -17,14 +25,15 @@ class Collision {
   bool debug_{false};
 
   Point simplex_[3]; // The last simplex for the collision between these two entities
-  std::vector<float>depth_; // Depth of the collision for each point in the manifold
+  float depth_; // Depth of the collision for each point in the manifold TODO: Update to be a vector for each contact point
   Vector2 normal_;  // Collision normal
   std::vector<Point> manifold_;
+  Contact contacts_[2];
   float friction_;
   bool resolved_;
   std::vector<std::pair<Point, Point>> lines_to_draw_;
 
-  Collision(Entity* A, Entity* B, Vector2 simplex[3]);
+  Collision(Entity* A, Entity* B, Vector2 simplex[3], float elapsed_time);
   // Collision(const Collision& collision);
   // Collision& operator=(const Collision& collision);
 
@@ -34,10 +43,16 @@ class Collision {
   Edge FindClosestEdge(std::vector<Point>& polygon);
   void FindCollisionManifold();
   Edge FindRelevantEdge(std::vector<Point> vertices_WCS_entity, bool positive_direction);
-  void update(Vector2 simplex[3]);
+  void update(Vector2 simplex[3], float elapsed_time);
+
+  void apply_impulse(float elapsed_time);
+
+ private:
+  float allowed_penetration = 0.01;
+  float bias_factor = 0.2; 
 };
 
-Collision::Collision(Entity* A_in, Entity* B_in, Vector2 simplex[3]) {
+Collision::Collision(Entity* A_in, Entity* B_in, Vector2 simplex[3], float elapsed_time) {
   A = A_in;
   B = B_in;
 
@@ -45,12 +60,14 @@ Collision::Collision(Entity* A_in, Entity* B_in, Vector2 simplex[3]) {
 
   resolved_ = false;
 
-  update(simplex);
+  update(simplex, elapsed_time);
 }
 
-void Collision::update(Vector2 simplex[3]) {
+void Collision::update(Vector2 simplex[3], float elapsed_time) {
+
   // Reset values
-  depth_.clear();
+  // depth_.clear();
+  depth_ = 0;
   normal_.reset();
   manifold_.clear();
   lines_to_draw_.clear();
@@ -65,9 +82,34 @@ void Collision::update(Vector2 simplex[3]) {
     simplex_[idx] = pt;
   }
 
-  // Resolve Collision
+  // Get Collision Contact Points
   EPA();
   FindCollisionManifold();
+
+  // Integrate body forces and torques
+
+  for (int idx = 0; idx < manifold_.size(); idx++) {
+    // Following is equivalent to the Arbiter::PreStep function in Box2d lite
+
+    Vector2 r_1(contacts_[idx].position.x - A->state.pos_x, contacts_[idx].position.y - A->state.pos_y);
+    Vector2 r_2(contacts_[idx].position.x - B->state.pos_x, contacts_[idx].position.y - B->state.pos_y);
+
+    // Mass Normal
+    float r_n_1 = r_1.dot(normal_);
+    float r_n_2 = r_2.dot(normal_);
+    contacts_[idx].mass_normal = 1 / (A->invMoI * (r_1.dot(r_1) - pow(r_n_1,2)) +
+                                      B->invMoI * (r_2.dot(r_2) - pow(r_n_2,2)));
+
+    // Mass Tangent
+    Vector2 tangent = normal_.cross(1);
+    float r_t_1 = r_1.dot(tangent);
+    float r_t_2 = r_2.dot(tangent);
+    contacts_[idx].mass_tangent += 1 / (A->invMoI * (r_1.dot(r_1) - pow(r_t_1,2)) +
+                                        B->invMoI * (r_2.dot(r_2) - pow(r_t_2,2)));
+
+    // Bias
+    contacts_[idx].bias = -bias_factor * (1 / elapsed_time) * std::min(0.0f, depth_ + allowed_penetration);
+  }
   // resolved_ = true;
 }
 
@@ -96,7 +138,7 @@ void Collision::EPA() {
       // penetration vector is the edge normal
       // penetration depth is d
       normal_ = e.normal;
-      float collision_depth = d;
+      float depth_ = d;
 
       return;
     } else {
@@ -220,6 +262,12 @@ void Collision::FindCollisionManifold() {
   if (ref_normal.dot(pt_1) - max < 0.0)
     manifold_.erase(manifold_.begin()+1);
 
+  // Create contacts from manifold
+  // TODO: Restructure to eliminate manifold and make everything work using contacts from the start
+  for (int idx = 0; idx < manifold_.size(); idx++) {
+    contacts_[idx].position = manifold_[idx];
+  }
+
   // Setup draw lines if in debug mode
   if (debug_) {
     lines_to_draw_.push_back(std::make_pair(ref_edge.v1, ref_edge.v2));
@@ -302,6 +350,70 @@ Edge Collision::FindRelevantEdge(std::vector<Point> vertices_WCS_entity, bool po
   return edge;
 }
 
+void Collision::apply_impulse(float elapsed_time) {
+  // Following is equivalent to the Arbiter::ApplyImpulse funtion in Box2d lite
+
+  for (int idx = 0; idx < manifold_.size(); idx++) {
+    Vector2 r_1(contacts_[idx].position.x - A->state.pos_x,
+                contacts_[idx].position.y - A->state.pos_y);
+    Vector2 r_2(contacts_[idx].position.x - B->state.pos_x,
+                contacts_[idx].position.y - B->state.pos_y);
+
+    Vector2 A_velo(A->state.vel_x, A->state.vel_y);
+    Vector2 B_velo(B->state.vel_x, B->state.vel_y);
+
+    for (int contact_idx = 0; contact_idx < manifold_.size(); contact_idx++) {
+
+      // Relative velocity at contact
+      Vector2 dV = B_velo + r_2.cross(B->state.angular_velocity) - 
+                   A_velo - r_1.cross(A->state.angular_velocity);
+
+      // Normal Impulse
+      float v_n = dV.dot(normal_);
+
+      float dP_n = contacts_[idx].mass_normal * (-v_n + contacts_[idx].bias);
+      dP_n = std::max(dP_n, 0.0f);  // TODO: replace with accumulate impulses code
+
+      // Apply this contact's impulse to bodies
+      Vector2 P_n = normal_ * dP_n;
+
+      A->state.vel_x -= A->invMass * P_n[0];
+      A->state.vel_y -= A->invMass * P_n[1];
+      A->state.angular_velocity -= A->invMass * r_1.cross(P_n);
+
+      B->state.vel_x -= B->invMass * P_n[0];
+      B->state.vel_y -= B->invMass * P_n[1];
+      B->state.angular_velocity -= B->invMass * r_2.cross(P_n);
+
+      // Recalculate relative velocity at contact
+      dV = B_velo + r_2.cross(B->state.angular_velocity) - 
+                   A_velo - r_1.cross(A->state.angular_velocity);
+
+      // Tangent impulse
+      Vector2 tangent = normal_.cross(1);
+      float v_t = dV.dot(tangent);
+
+      float dP_t = contacts_[idx].mass_tangent * -v_t;
+
+      // TODO: More accumulate impulses
+
+      float maxP_t = dP_n * friction_;
+      dP_t = std::clamp(dP_t, -maxP_t, maxP_t);
+
+      // Apply this contact's tangent impulse to bodies
+      Vector2 P_t = tangent * dP_t;
+
+      A->state.vel_x -= A->invMass * P_t[0];
+      A->state.vel_y -= A->invMass * P_t[1];
+      A->state.angular_velocity -= A->invMass * r_1.cross(P_t);
+
+      B->state.vel_x -= B->invMass * P_t[0];
+      B->state.vel_y -= B->invMass * P_t[1];
+      B->state.angular_velocity -= B->invMass * r_2.cross(P_t);
+    }
+  }
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 class CollisionProcessor {
@@ -310,8 +422,8 @@ class CollisionProcessor {
   Vector2 simplex_[3];
   bool debug{false};
 
-  void evaluate_collisions();
-  void find_or_create_collision(Entity* A, Entity* B);
+  void evaluate_collisions(float elapsed_time);
+  void find_or_create_collision(Entity* A, Entity* B, float elapsed_time);
   void prune_resolved_collisions();
 
   CollisionProcessor(){};
@@ -329,6 +441,9 @@ class CollisionProcessor {
   // void reset_collisions(std::vector<Entity*> entities);
 
   EntityRegister entities;
+
+ private:
+  const int iterations = 10;
 };
 
 CollisionProcessor& CollisionProcessor::operator=(const CollisionProcessor& collisionprocessor) {
@@ -353,25 +468,33 @@ CollisionProcessor::CollisionProcessor(const CollisionProcessor& collisionproces
   std::cout << "Copying collision processor\n";
 }
 
-void CollisionProcessor::evaluate_collisions() {
+void CollisionProcessor::evaluate_collisions(float elapsed_time) {
 
   std::vector<EntityPair> pairs = brute_force();
 
   // For each pair
   for (int idx = 0; idx < pairs.size(); idx++) {
     if (GJK(pairs[idx].A->vertices_WCS, pairs[idx].B->vertices_WCS)) {
-      find_or_create_collision(pairs[idx].A, pairs[idx].B);
+      find_or_create_collision(pairs[idx].A, pairs[idx].B, elapsed_time);
+    }
+  }
+
+  // For each iteration
+  for (int iteration = 0; iteration < iterations; iteration++) {
+    // For each collision
+    for (int idx = 0; idx < active_collisions_.size(); idx++) {
+      active_collisions_[idx].apply_impulse(elapsed_time);
     }
   }
 }
 
-void CollisionProcessor::find_or_create_collision(Entity* A, Entity* B) {
+void CollisionProcessor::find_or_create_collision(Entity* A, Entity* B, float elapsed_time) {
   // if the active collisions vector is empty
   if (active_collisions_.empty()) {
 
     // Create new collision
     std::cout << "1. New Collision between " << A << " and " << B << "\n";
-    Collision collision(A, B, simplex_);
+    Collision collision(A, B, simplex_, elapsed_time);
     active_collisions_.push_back(collision);
 
   } else {
@@ -389,7 +512,7 @@ void CollisionProcessor::find_or_create_collision(Entity* A, Entity* B) {
         new_collision = false;
         active_collisions_[idx].A = A;
         active_collisions_[idx].B = B;
-        active_collisions_[idx].update(simplex_);
+        active_collisions_[idx].update(simplex_, elapsed_time);
         active_collisions_[idx].debug_ = debug;  // Update debug state
       }
     }
@@ -398,7 +521,7 @@ void CollisionProcessor::find_or_create_collision(Entity* A, Entity* B) {
     if (new_collision) {
       std::cout << "2. New Collision between " << A << " and " << B << "\n";
       // Create new collision
-      Collision collision(A, B, simplex_);
+      Collision collision(A, B, simplex_, elapsed_time);
       active_collisions_.push_back(collision);
     }
   }

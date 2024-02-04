@@ -1,13 +1,14 @@
 Entities
 [x] add float friction member
 [x] add inverse mass member
+[ ] convert state to use vector2s
 
 Collision
 [x] add float friction member
     friction = sqrt(A.friction * B.friction)
-
-Do I need something like a "contact" class?
--seems like this is needed for warm starting
+[x] Create contacts struct
+[x] Update FindCollisionManifold to create contacts from points
+[ ] find some way to correlate contacts between frames?
 
 Box2d-lite Main Loop
 1) Setup new ImGui frame
@@ -16,6 +17,7 @@ Box2d-lite Main Loop
  3a) if dt is positive, calculate inverse time
  3b) Broadphase
  3c) Integrate bodies velocity and angular velocity
+     - This uses force and torque
   3c1) If body has inverse mass of 0, then do not integrate
  3d) Loop through all arbiters (collisions)
   3d1) Pre-step
